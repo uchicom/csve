@@ -39,7 +39,7 @@ import com.uchicom.csve.util.UIStore;
  * @author uchiyama
  */
 public class CsvTagEditor extends JFrame implements CsvTagEditorUI {
-	private File confFile = new File("./conf.properties");
+	private File confFile = new File("./conf/csve.properties");
 	private Properties conf = new Properties();
 
 	/** Creates a new instance of CsvTagEditor */

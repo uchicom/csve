@@ -37,7 +37,7 @@ public class OptionAction extends UIAbstractAction {
         Component basisComponent = csvTagEditorUI.getBasisComponent();
 
         //プロパティファイルの読み込み
-        File file = new File("./conf.properties");
+        File file = new File("./conf/csve.properties");
         if (file.exists()) {
         	//ファイルがある場合は設定ファイルを読み込む
         	openOptionFile(file, csvTagEditorUI);
