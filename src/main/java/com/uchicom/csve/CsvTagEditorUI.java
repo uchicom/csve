@@ -12,12 +12,13 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 
 import com.uchicom.csve.util.SearchTable;
+import com.uchicom.ui.FileOpener;
 
 /**
  *
  * @author uchiyama
  */
-public interface CsvTagEditorUI {
+public interface CsvTagEditorUI extends FileOpener {
     String UI_KEY = "CsvTagEditorUI";
     public void createTable(int row, int col);
 

@@ -2,6 +2,7 @@
 package com.uchicom.csve;
 
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.io.File;
@@ -18,12 +19,14 @@ import java.util.Properties;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 
 import com.uchicom.csve.util.ActionUI;
+import com.uchicom.csve.util.CSVReader;
 import com.uchicom.csve.util.CellInfo;
 import com.uchicom.csve.util.CellListTableModel;
 import com.uchicom.csve.util.CellRenderer;
@@ -32,7 +35,9 @@ import com.uchicom.csve.util.SearchTable;
 import com.uchicom.csve.util.SortTableColumn;
 import com.uchicom.csve.util.SortTableColumnModel;
 import com.uchicom.csve.util.StringCellInfo;
+import com.uchicom.csve.util.TextAreaCellEditor;
 import com.uchicom.csve.util.UIStore;
+import com.uchicom.ui.FileOpener;
 
 /**
  *
@@ -77,6 +82,7 @@ public class CsvTagEditor extends JFrame implements CsvTagEditorUI {
 			e.printStackTrace();
 		}
 
+		FileOpener.installDragAndDrop(tabPane, this);
 		getContentPane().add(tabPane);
 		JMenuBarFactory menuBarFactory = new JMenuBarFactory();
 		JMenuBar menuBar = menuBarFactory.createJMenuBar(uiStore);
@@ -134,6 +140,7 @@ public class CsvTagEditor extends JFrame implements CsvTagEditorUI {
 			table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 			table.setColumnSelectionAllowed(true);
 			table.setRowSelectionAllowed(true);
+
 
 			list.add(table);
 			map.put(new Integer(tabPane.getTabCount()), cvsList);
@@ -258,5 +265,118 @@ public class CsvTagEditor extends JFrame implements CsvTagEditorUI {
 	@Override
 	public Map<Integer, File> getFileMap() {
 		return fileMap;
+	}
+
+	/* (非 Javadoc)
+	 * @see com.uchicom.ui.FileOpener#open(java.io.File)
+	 */
+	@Override
+	public void open(File file) throws IOException {
+		if (tabPane.indexOfTab(file.getName()) >= 0) {
+			int res = JOptionPane.showConfirmDialog(this, "すでに表示されています、編集中のタブを閉じてもよろしいですか？");
+			switch (res) {
+			case JOptionPane.CANCEL_OPTION:
+				return;
+			case JOptionPane.OK_OPTION:
+				tabPane.removeTabAt(tabPane.indexOfTab(file.getName()));
+				break;
+			case JOptionPane.CLOSED_OPTION:
+				return;
+			case JOptionPane.NO_OPTION:
+				return;
+			default:
+				return;
+
+			}
+
+		}
+		//
+		if (file.exists()) {
+			conf.put("path", file.getCanonicalPath());
+			//SJIS固定でファイルを開く、そのうち文字コード自動判定とか入れるか。
+			CSVReader reader = new CSVReader(file, "UTF-8");
+			//CSVファイルを格納するリストを作成
+			CellInfo[] lines = reader.getNextCsvLineCellInfo();
+
+			//一行ずつCSVを取得する
+
+			int columnCount = 0;
+			List<CellInfo[]> csvList = new ArrayList<CellInfo[]>();
+			CellInfo[] tmp = lines;
+			while (lines != null) {
+
+				//ファイルのオープンでエラーが発生している。
+
+				if (columnCount < lines.length) {
+					columnCount = lines.length;
+					tmp = lines;
+				}
+				csvList.add(lines);
+
+				lines = reader.getNextCsvLineCellInfo();
+			}
+			System.out.println(csvList.size());
+			SortTableColumnModel columnModel = new SortTableColumnModel();
+			char[] ind = new char[3];
+
+			for (int i = 0; i < tmp.length; i++) {
+
+				SortTableColumn column = new SortTableColumn();
+
+				if (i < 26) {
+					column.setHeaderValue((char) ('A' + (i % 26)));
+				} else if (i < 26 * 26) {
+					ind[0] = (char) ('A' + (i / 26));
+					ind[1] = (char) ('A' + ((i - 1) % 26));
+					column.setHeaderValue(String.valueOf(ind));
+				} else if (i < 26 * 26 * 26) {
+					ind[0] = (char) ('A' + (i / (26 * 26)));
+					ind[1] = (char) ('A' + (i / 26));
+					ind[2] = (char) ('A' + ((i - 1) % 26));
+					column.setHeaderValue(String.valueOf(ind));
+				}
+				column.setModelIndex(i);
+				column.setIdentifier(String.valueOf(i));
+				column.setCellRenderer(new CellRenderer());
+				//tableColumnを使う場合はcellEditorを設定してあげないとちゃんと動かない
+				column.setCellEditor(new TextAreaCellEditor());
+				columnModel.addColumn(column);
+
+			}
+			//ファイルのクローズ処理をする
+			reader.close();
+			//テーブルモデルと、列数を格納する
+			SearchTable table = new SearchTable(new CellListTableModel(csvList, columnCount), columnModel);
+			//テーブルのリサイズをなしにする
+			table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+			//列選択可能にする
+			table.setColumnSelectionAllowed(true);
+			//行選択可能にする
+			table.setRowSelectionAllowed(true);
+			getTableMap().put(new Integer(tabPane.getTabCount()), csvList);
+			getFileMap().put(tabPane.getTabCount(), file);
+			getTableList().add(table);
+			//ファイル名でタブに追加する
+			tabPane.add(file.getName(), new JScrollPane(table));
+			tabPane.setSelectedIndex(tabPane.indexOfTab(file.getName()));
+			//画面を整形して表示する
+			pack();
+		}
+	}
+
+	/* (非 Javadoc)
+	 * @see com.uchicom.ui.FileOpener#open(java.util.List)
+	 */
+	@Override
+	public void open(List<File> fileList) {
+		setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+		for (File file : fileList) {
+			try {
+				open(file);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 	}
 }
