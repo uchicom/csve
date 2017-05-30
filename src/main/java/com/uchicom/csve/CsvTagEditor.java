@@ -109,22 +109,9 @@ public class CsvTagEditor extends JFrame implements CsvTagEditorUI {
 			// テーブルの列モデルを作成する
 			SortTableColumnModel columnModel = new SortTableColumnModel();
 
-			char[] ind = new char[3];
 			for (int i = 0; i < col; i++) {
 				SortTableColumn column = new SortTableColumn();
-
-				if (i < 26) {
-					column.setHeaderValue((char) ('A' + (i % 26)));
-				} else if (i < 26 * 26) {
-					ind[0] = (char) ('A' + (i / 26));
-					ind[1] = (char) ('A' + ((i - 1) % 26));
-					column.setHeaderValue(String.valueOf(ind));
-				} else if (i < 26 * 26 * 26) {
-					ind[0] = (char) ('A' + (i / (26 * 26)));
-					ind[1] = (char) ('A' + (i / 26));
-					ind[2] = (char) ('A' + ((i - 1) % 26));
-					column.setHeaderValue(String.valueOf(ind));
-				}
+				column.setHeaderValue(getColumnName(i));
 				column.setModelIndex(i);
 				column.setIdentifier(String.valueOf(i));
 				column.setCellRenderer(new CellRenderer());
@@ -378,5 +365,36 @@ public class CsvTagEditor extends JFrame implements CsvTagEditorUI {
 			}
 		}
 		setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+	}
+
+	/**
+	 * 0スタート
+	 *
+	 * @param index
+	 * @return
+	 */
+	public static String getColumnName(int index) {
+		if (index / 26 > 0) {
+			return new String(new char[] { (char) ('A' + (index / 26) - 1), (char) ('A' + (index % 26)) });
+		} else {
+			return new String(new char[] { (char) ('A' + index) });
+		}
+	}
+
+	/**
+	 * 0スタート
+	 *
+	 * @param columnName
+	 * @return
+	 */
+	public static int getColumnIndex(String columnName) {
+		if (columnName.length() > 1) {
+			int up = columnName.charAt(0) - 'A';
+			int down = columnName.charAt(1) - 'A';
+			return (up + 1) * 26 + down;
+		} else {
+			int down = columnName.charAt(1) - 'A';
+			return down;
+		}
 	}
 }

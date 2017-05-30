@@ -93,7 +93,6 @@ public class CSVReader implements Closeable {
 								index = iByte + 1;
 							}
 							break;
-						case '\r':
 						case '\n':
 							if (escapeOffFlg) {
 								escapeOnFlg = false;
@@ -174,7 +173,6 @@ public class CSVReader implements Closeable {
 									index = iByte + 1;
 								}
 								break;
-							case '\r':
 							case '\n':
 								if (escapeOffFlg) {
 									escapeOnFlg = false;
