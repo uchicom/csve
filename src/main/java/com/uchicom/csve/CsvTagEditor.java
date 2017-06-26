@@ -4,7 +4,10 @@ package com.uchicom.csve;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.Rectangle;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -44,13 +47,46 @@ import com.uchicom.ui.FileOpener;
  * @author uchiyama
  */
 public class CsvTagEditor extends JFrame implements CsvTagEditorUI {
-	private File confFile = new File("./conf/csve.properties");
-	private Properties conf = new Properties();
 
+	private Properties properties = new Properties();
 	/** Creates a new instance of CsvTagEditor */
 	public CsvTagEditor() {
 		super("CsvTagEditor");
 		this.self = this;
+		initComponents();
+	}
+
+	private void initComponents() {
+		initProperties();
+		setWindowPosition(this, Constants.PROP_KEY_WINDOW_CSVE_POSITION);
+		setWindowState(this, Constants.PROP_KEY_WINDOW_CSVE_STATE);
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent we) {
+				if (CsvTagEditor.this.getExtendedState() == JFrame.NORMAL) {
+					// 画面の位置を保持する
+					storeWindowPosition(CsvTagEditor.this, Constants.PROP_KEY_WINDOW_CSVE_POSITION);
+				} else {
+					storeWindowState(CsvTagEditor.this, Constants.PROP_KEY_WINDOW_CSVE_STATE);
+				}
+				storeProperties();
+			}
+
+		});
+		addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentMoved(ComponentEvent ce) {
+				if (getExtendedState() == JFrame.NORMAL) {
+					storeWindowPosition(CsvTagEditor.this, Constants.PROP_KEY_WINDOW_CSVE_POSITION);
+				}
+			}
+			@Override
+			public void componentResized(ComponentEvent ce) {
+				if (getExtendedState() == JFrame.NORMAL) {
+					storeWindowPosition(CsvTagEditor.this, Constants.PROP_KEY_WINDOW_CSVE_POSITION);
+				}
+			}
+		});
 		try {
 			uiStore.putUI(ActionUI.UI_KEY, new ActionUI());
 		} catch (IOException e) {
@@ -59,28 +95,6 @@ public class CsvTagEditor extends JFrame implements CsvTagEditorUI {
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		uiStore.putUI(UI_KEY, this);
 
-		try (FileInputStream fis = new FileInputStream(confFile)) {
-			conf.load(fis);
-
-
-				String bounds = conf.getProperty("bounds");
-				if (bounds != null && !"".equals(bounds)) {
-					String[] boundsValue = bounds.split(",");
-					if (boundsValue.length == 4) {
-						this.setLocation(Integer.parseInt(boundsValue[0]),
-						Integer.parseInt(boundsValue[1]));
-						this.setPreferredSize(new Dimension(Integer.parseInt(boundsValue[2]),
-								Integer.parseInt(boundsValue[3])));
-					}
-				}
-
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 
 		FileOpener.installDragAndDrop(tabPane, this);
 		getContentPane().add(tabPane);
@@ -88,6 +102,7 @@ public class CsvTagEditor extends JFrame implements CsvTagEditorUI {
 		JMenuBar menuBar = menuBarFactory.createJMenuBar(uiStore);
 
 		setJMenuBar(menuBar);
+        pack();
 	}
 
 	/**
@@ -157,28 +172,6 @@ public class CsvTagEditor extends JFrame implements CsvTagEditorUI {
 		tabPane.add(tabName, new JScrollPane(table));
 	}
 
-	/**
-	 * 画面終了時に、画面位置を設定ファイルに保存する。
-	 */
-	public void dispose() {
-		// メモリ上の設定情報を取得する。
-		// Window位置を取得する
-		// ファイルに書き出す
-		try (FileOutputStream fos = new FileOutputStream(confFile)) {
-			Rectangle rectangle = this.getBounds();
-			conf.put("bounds", ((int)rectangle.getX()) + "," + ((int)rectangle.getY()) + "," + ((int)rectangle.getWidth()) + ","
-					+ ((int)rectangle.getHeight()));
-			conf.store(fos, "properties");
-		} catch (FileNotFoundException e) {
-			// TODO 自動生成された catch ブロック
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO 自動生成された catch ブロック
-			e.printStackTrace();
-		}
-		super.dispose();
-
-	}
 
 	/** メイン画面 */
 	private JFrame self = null;
@@ -246,7 +239,7 @@ public class CsvTagEditor extends JFrame implements CsvTagEditorUI {
 
 	@Override
 	public Properties getProperties() {
-		return conf;
+		return properties;
 	}
 
 	@Override
@@ -279,7 +272,7 @@ public class CsvTagEditor extends JFrame implements CsvTagEditorUI {
 		}
 		//
 		if (file.exists()) {
-			conf.put("path", file.getCanonicalPath());
+			properties.put("path", file.getCanonicalPath());
 			//SJIS固定でファイルを開く、そのうち文字コード自動判定とか入れるか。
 			CSVReader reader = new CSVReader(file, "UTF-8");
 			//CSVファイルを格納するリストを作成
@@ -395,6 +388,89 @@ public class CsvTagEditor extends JFrame implements CsvTagEditorUI {
 		} else {
 			int down = columnName.charAt(1) - 'A';
 			return down;
+		}
+	}
+
+	/**
+	 * 画面の位置をプロパティに設定する。
+	 *
+	 * @param frame
+	 * @param key
+	 */
+	private void storeWindowPosition(JFrame frame, String key) {
+		String value = frame.getLocation().x + Constants.PROP_SPLIT_CHAR + frame.getLocation().y + Constants.PROP_SPLIT_CHAR
+				+ frame.getWidth() + Constants.PROP_SPLIT_CHAR + frame.getHeight() + Constants.PROP_SPLIT_CHAR;
+		properties.setProperty(key, value);
+	}
+	/**
+	 * 画面の位置をプロパティに設定する。
+	 *
+	 * @param frame
+	 * @param key
+	 */
+	private void storeWindowState(JFrame frame, String key) {
+		String value = frame.getState() + Constants.PROP_SPLIT_CHAR
+				+ frame.getExtendedState();
+		properties.setProperty(key, value);
+	}
+
+	/**
+	 * 画面のサイズをプロパティから設定する。
+	 *
+	 * @param frame
+	 * @param key
+	 */
+	public void setWindowPosition(JFrame frame, String key) {
+		if (properties.containsKey(key)) {
+			String initPoint = properties.getProperty(key);
+			String[] points = initPoint.split(Constants.PROP_SPLIT_CHAR);
+			if (points.length > 3) {
+				frame.setLocation(Integer.parseInt(points[0]), Integer.parseInt(points[1]));
+				frame.setPreferredSize(new Dimension(Integer.parseInt(points[2]), Integer.parseInt(points[3])));
+			}
+		}
+	}
+	public void setWindowState(JFrame frame, String key) {
+		if (properties.containsKey(key)) {
+			String initPoint = properties.getProperty(key);
+			String[] points = initPoint.split(Constants.PROP_SPLIT_CHAR);
+			if (points.length > 1) {
+				frame.setState(Integer.parseInt(points[0]));
+				frame.setExtendedState(Integer.parseInt(points[1]));
+			}
+		}
+	}
+
+	/**
+	 *
+	 */
+
+	private void initProperties() {
+		if (Constants.CONF_FILE.exists() && Constants.CONF_FILE.isFile()) {
+			try (FileInputStream fis = new FileInputStream(Constants.CONF_FILE);) {
+				properties.load(fis);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	private void storeProperties() {
+		try {
+			if (!Constants.CONF_FILE.exists()) {
+				Constants.CONF_FILE.getParentFile().mkdirs();
+				Constants.CONF_FILE.createNewFile();
+			}
+			try (FileOutputStream fos = new FileOutputStream(Constants.CONF_FILE);) {
+				properties.store(fos, Constants.APP_NAME + " Ver" + Constants.VERSION);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 }

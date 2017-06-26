@@ -11,7 +11,7 @@ import javax.swing.table.DefaultTableModel;
 public class ListTableModel extends DefaultTableModel {
 
     /** Creates a new instance of ListTableModel */
-    public ListTableModel(List rowList, int columnCount) {
+    public ListTableModel(List<String[]> rowList, int columnCount) {
         this.rowList = rowList;
         this.columnCount = columnCount;
     }
@@ -30,7 +30,8 @@ public class ListTableModel extends DefaultTableModel {
             cells[col] = (String)value;
         }
     }
-    public Class getColumnClass(int columnIndex) {
+    @Override
+    public Class<?> getColumnClass(int columnIndex) {
         return String.class;
     }
     public int  getColumnCount() {
@@ -54,7 +55,6 @@ public class ListTableModel extends DefaultTableModel {
     public Point searchAndSelect(String target, int startRow, int startCol, boolean contain) {
 
     	//検索値からテーブルの中を検索する
-    	boolean result = false;
     	for (int i = startRow; i < rowList.size(); i++) {
     		String[] cells = rowList.get(i);
     		for (int j = 0; j < cells.length; j++) {

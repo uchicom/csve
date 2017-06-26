@@ -23,7 +23,6 @@ public class Main {
         } else {
             frame.createTable(1000, 100);
         }
-        frame.pack();
         frame.setVisible(true);
     }
 
