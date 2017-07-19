@@ -2,12 +2,13 @@
 package com.uchicom.csve.util;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.List;
 public class CSVReader implements Closeable {
 
 	private BufferedReader bis;
+	private byte[] bytes;
 	private int length;
 	private int index;
 	private char[] chars = new char[1024 * 4 * 1024];
@@ -28,19 +30,31 @@ public class CSVReader implements Closeable {
 	char[] lastChars;
 	int lnCount = 0;
 	int maxLnCount = 0;
+	String enc;
+	private ByteArrayOutputStream baos = new ByteArrayOutputStream(4 * 1024 * 1024);
 
-	/** Creates a new instance of CVSReader */
-	public CSVReader(String fileName, String enc) {
+	/** Creates a new instance of CVSReader
+	 * @throws FileNotFoundException */
+	public CSVReader(String fileName, String enc) throws FileNotFoundException {
 		this(new File(fileName), enc);
 	}
 
-	public CSVReader(File file, String enc) {
+	public CSVReader(File file, String enc) throws FileNotFoundException {
+		this(new FileInputStream(file), enc);
+	}
+	public CSVReader(InputStream is, String enc) {
+		this.enc = enc;
 		try {
-			bis = new BufferedReader(new InputStreamReader(new FileInputStream(file), enc));
+//			bis = new BufferedReader(new InputStreamReader(is, enc));
+			int length = 0;
+			byte[] readBytes = new byte[4 * 1024 * 1024];
+			while ((length = is.read(readBytes)) > 0) {
+				baos.write(readBytes, 0, length);
+			}
+			bytes = baos.toByteArray();
 
-		} catch (FileNotFoundException exception) {
 		} catch (Exception e) {
-
+			e.printStackTrace();
 		}
 	}
 
@@ -227,6 +241,117 @@ public class CSVReader implements Closeable {
 		}
 		return cells;
 	}
+	/**
+	 * 高速化のためにエスケープする列を固定したい
+	 * @param maxArray
+	 * @param force
+	 * @return
+	 * @throws IOException
+	 */
+	public String[] getNextCsvLine(int maxArray, boolean force) throws IOException {
+		if (index >= bytes.length) {
+			return null;
+		}
+		int start = index;
+		int l = 0;
+		int arraySize = 0;// 返却するサイズ
+		String[] strings = new String[maxArray];
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		boolean escape = false;
+		boolean existEscape = false;
+		boolean escapeChar = true;
+		for (; index < bytes.length; index++) {// 取得したデータが終わるまで
+			if (escape) {
+				// lengthチェックが必要
+				if (escapeChar) {
+					escapeChar = false;
+				} else if (bytes[index] == '\\') {
+					escapeChar = true;
+					if (l > 0) {
+						baos.write(bytes, start, l);
+						l = 0;
+					}
+					start = index + 1;
+					continue;
+				} else if (bytes[index] == '\"') {
+					escape = false;
+					if (l > 0) {
+						baos.write(bytes, start, l);
+						l = 0;
+					}
+					start = index + 1;
+					continue;
+				}
+			} else if (bytes[index] == '\"') {
+				escape = true;
+				existEscape = true;
+				if (l > 0) {
+					baos.write(bytes, start, l);
+					l = 0;
+				}
+				start = index + 1;
+				continue;
+			} else if (bytes[index] == ',' || bytes[index] == '\n') {
+				// ここで文字列追加して
+				if (arraySize >= maxArray) {
+					if (force) {
+						// 配列作り直し
+						strings = Arrays.copyOf(strings, strings.length + 1);
+					} else {
+						// エラー
+						throw new RuntimeException("パース失敗");
+					}
+				}
+				if (existEscape) {
+					if (l > 0) {
+						baos.write(bytes, start, l);
+						l = 0;
+					}
+					strings[arraySize] = new String(baos.toByteArray(), enc);
+					baos.reset();
+				} else {
+					strings[arraySize] = new String(bytes, start, l, enc);
+				}
+				arraySize++;
+				// 初期化
+				existEscape = false;
+				start = index + 1;
+				l = 0;
+				if (bytes[index] == '\n') {
+					// ここでデータ終了
+					index++;
+					return strings;
+				}
+
+				continue;
+			}
+			l++;
+		}
+		//データの最後に来た場合は必ず変換してないデータがある
+
+		if (arraySize >= maxArray) {
+			if (force) {
+				// 配列作り直し
+				strings = Arrays.copyOf(strings, strings.length + 1);
+			} else {
+				// エラー
+				throw new RuntimeException("パース失敗");
+			}
+		}
+		if (existEscape) {
+			if (l > 0) {
+				baos.write(bytes, start, l);
+				l = 0;
+			}
+			strings[arraySize] = new String(baos.toByteArray(), enc);
+			baos.reset();
+		} else {
+			strings[arraySize] = new String(bytes, start, l, enc);
+		}
+		arraySize++;
+		return strings;
+	}
+
 
 	@Override
 	public void close() {

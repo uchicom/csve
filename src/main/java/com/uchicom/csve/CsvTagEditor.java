@@ -3,15 +3,7 @@ package com.uchicom.csve;
 
 import java.awt.Component;
 import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,52 +33,22 @@ import com.uchicom.csve.util.StringCellInfo;
 import com.uchicom.csve.util.TextAreaCellEditor;
 import com.uchicom.csve.util.UIStore;
 import com.uchicom.ui.FileOpener;
+import com.uchicom.ui.ResumeFrame;
 
 /**
  *
  * @author uchiyama
  */
-public class CsvTagEditor extends JFrame implements CsvTagEditorUI {
-
-	private Properties properties = new Properties();
+public class CsvTagEditor extends ResumeFrame implements CsvTagEditorUI {
 	/** Creates a new instance of CsvTagEditor */
 	public CsvTagEditor() {
-		super("CsvTagEditor");
+		super(Constants.CONF_FILE, Constants.PROP_KEY_CSVE);
 		this.self = this;
 		initComponents();
 	}
 
 	private void initComponents() {
-		initProperties();
-		setWindowPosition(this, Constants.PROP_KEY_WINDOW_CSVE_POSITION);
-		setWindowState(this, Constants.PROP_KEY_WINDOW_CSVE_STATE);
-		addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent we) {
-				if (CsvTagEditor.this.getExtendedState() == JFrame.NORMAL) {
-					// 画面の位置を保持する
-					storeWindowPosition(CsvTagEditor.this, Constants.PROP_KEY_WINDOW_CSVE_POSITION);
-				} else {
-					storeWindowState(CsvTagEditor.this, Constants.PROP_KEY_WINDOW_CSVE_STATE);
-				}
-				storeProperties();
-			}
-
-		});
-		addComponentListener(new ComponentAdapter() {
-			@Override
-			public void componentMoved(ComponentEvent ce) {
-				if (getExtendedState() == JFrame.NORMAL) {
-					storeWindowPosition(CsvTagEditor.this, Constants.PROP_KEY_WINDOW_CSVE_POSITION);
-				}
-			}
-			@Override
-			public void componentResized(ComponentEvent ce) {
-				if (getExtendedState() == JFrame.NORMAL) {
-					storeWindowPosition(CsvTagEditor.this, Constants.PROP_KEY_WINDOW_CSVE_POSITION);
-				}
-			}
-		});
+		setTitle("CsvTagEditor");
 		try {
 			uiStore.putUI(ActionUI.UI_KEY, new ActionUI());
 		} catch (IOException e) {
@@ -239,7 +201,7 @@ public class CsvTagEditor extends JFrame implements CsvTagEditorUI {
 
 	@Override
 	public Properties getProperties() {
-		return properties;
+		return config;
 	}
 
 	@Override
@@ -272,7 +234,7 @@ public class CsvTagEditor extends JFrame implements CsvTagEditorUI {
 		}
 		//
 		if (file.exists()) {
-			properties.put("path", file.getCanonicalPath());
+			config.put("path", file.getCanonicalPath());
 			//SJIS固定でファイルを開く、そのうち文字コード自動判定とか入れるか。
 			CSVReader reader = new CSVReader(file, "UTF-8");
 			//CSVファイルを格納するリストを作成
@@ -391,86 +353,4 @@ public class CsvTagEditor extends JFrame implements CsvTagEditorUI {
 		}
 	}
 
-	/**
-	 * 画面の位置をプロパティに設定する。
-	 *
-	 * @param frame
-	 * @param key
-	 */
-	private void storeWindowPosition(JFrame frame, String key) {
-		String value = frame.getLocation().x + Constants.PROP_SPLIT_CHAR + frame.getLocation().y + Constants.PROP_SPLIT_CHAR
-				+ frame.getWidth() + Constants.PROP_SPLIT_CHAR + frame.getHeight() + Constants.PROP_SPLIT_CHAR;
-		properties.setProperty(key, value);
-	}
-	/**
-	 * 画面の位置をプロパティに設定する。
-	 *
-	 * @param frame
-	 * @param key
-	 */
-	private void storeWindowState(JFrame frame, String key) {
-		String value = frame.getState() + Constants.PROP_SPLIT_CHAR
-				+ frame.getExtendedState();
-		properties.setProperty(key, value);
-	}
-
-	/**
-	 * 画面のサイズをプロパティから設定する。
-	 *
-	 * @param frame
-	 * @param key
-	 */
-	public void setWindowPosition(JFrame frame, String key) {
-		if (properties.containsKey(key)) {
-			String initPoint = properties.getProperty(key);
-			String[] points = initPoint.split(Constants.PROP_SPLIT_CHAR);
-			if (points.length > 3) {
-				frame.setLocation(Integer.parseInt(points[0]), Integer.parseInt(points[1]));
-				frame.setPreferredSize(new Dimension(Integer.parseInt(points[2]), Integer.parseInt(points[3])));
-			}
-		}
-	}
-	public void setWindowState(JFrame frame, String key) {
-		if (properties.containsKey(key)) {
-			String initPoint = properties.getProperty(key);
-			String[] points = initPoint.split(Constants.PROP_SPLIT_CHAR);
-			if (points.length > 1) {
-				frame.setState(Integer.parseInt(points[0]));
-				frame.setExtendedState(Integer.parseInt(points[1]));
-			}
-		}
-	}
-
-	/**
-	 *
-	 */
-
-	private void initProperties() {
-		if (Constants.CONF_FILE.exists() && Constants.CONF_FILE.isFile()) {
-			try (FileInputStream fis = new FileInputStream(Constants.CONF_FILE);) {
-				properties.load(fis);
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-	private void storeProperties() {
-		try {
-			if (!Constants.CONF_FILE.exists()) {
-				Constants.CONF_FILE.getParentFile().mkdirs();
-				Constants.CONF_FILE.createNewFile();
-			}
-			try (FileOutputStream fos = new FileOutputStream(Constants.CONF_FILE);) {
-				properties.store(fos, Constants.APP_NAME + " Ver" + Constants.VERSION);
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 }
