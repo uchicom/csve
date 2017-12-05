@@ -9,6 +9,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -56,6 +57,10 @@ public class CSVReader implements Closeable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public CSVReader(URL url, String enc) throws IOException {
+		this(url.openStream(), enc);
 	}
 
 	public CellInfo[] getNextCsvLineCellInfo() {
