@@ -3,9 +3,9 @@
   <groupId>com.uchicom</groupId>
   <artifactId>csve</artifactId>
   <version>1.0.0</version>
-  	<name>wjm</name>
+  	<name>csve</name>
 	<description>web viewer</description>
-	<url>https://uchicom.com/wjm.htm</url>
+	<url>https://uchicom.com/csve.htm</url>
 	<licenses>
 		<license>
 			<name>Apache License 2.0</name>
@@ -22,9 +22,9 @@
 		</developer>
 	</developers>
 	<scm>
-		<url>https://github.com/uchicom/wjm</url>
-		<connection>scm:git:git@github.com:uchicom/wjm.git</connection>
-		<developerConnection>scm:git:git@github.com:uchicom/wjm.git</developerConnection>
+		<url>https://github.com/uchicom/csve</url>
+		<connection>scm:git:git@github.com:uchicom/csve.git</connection>
+		<developerConnection>scm:git:git@github.com:uchicom/csve.git</developerConnection>
 	</scm>
 	<distributionManagement>
 		<snapshotRepository>
