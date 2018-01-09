@@ -270,23 +270,23 @@ public class CSVReader implements Closeable {
 		// 3パターン 足りない、ぴったり、多い
 		StringBuffer strBuff = new StringBuffer();
 		while (true) {
-			System.out.println(index + ":" + length);
+//			System.out.println(index + ":" + length);
 			// 取得したデータが終わるまで
 			if (index >= length) {
-				System.out.println("a");
+//				System.out.println("a");
 				if (start < length) {
 					strBuff.append(new String(chars, start, l));
 				}
 				length = bis.read(chars);
 				if (length <= 0) {
-					System.out.println("b");
+//					System.out.println("b");
 					break;
 				}
 				start = 0;
 				index = 0;
 				l = 0;
 			}
-			System.out.println("b");
+//			System.out.println("b");
 			if (escape) {
 				// lengthチェックが必要
 				if (chars[index] == '\"') {
@@ -300,7 +300,7 @@ public class CSVReader implements Closeable {
 				index++;
 				continue;
 			} else if (chars[index] == ',' || chars[index] == '\n') {
-				System.out.println("d");
+//				System.out.println("d");
 				if (arraySize >= maxArray) {
 					if (force) {
 						// 配列作り直し
@@ -313,11 +313,11 @@ public class CSVReader implements Closeable {
 				if (strBuff.length() > 0) {
 					strBuff.append(new String(chars, start, l));
 					strings[arraySize] = strBuff.toString();
-					System.out.println(strings[arraySize]);
+//					System.out.println(strings[arraySize]);
 					strBuff.setLength(0);
 				} else {
 					strings[arraySize] = new String(chars, start, l);
-					System.out.println(arraySize + ":" + strings[arraySize]);
+//					System.out.println(arraySize + ":" + strings[arraySize]);
 				}
 				arraySize++;
 				// 初期化
@@ -333,7 +333,7 @@ public class CSVReader implements Closeable {
 			}
 			index++;
 			l++;
-			System.out.println("c");
+//			System.out.println("c");
 		}
 		// データの最後に来た場合は変換してないデータがある
 
@@ -350,7 +350,7 @@ public class CSVReader implements Closeable {
 		if (strBuff.length() > 0) {
 			strBuff.append(new String(chars, start, l));
 			strings[arraySize] = strBuff.toString();
-			System.out.println(arraySize + ":" + strings[arraySize]);
+//			System.out.println(arraySize + ":" + strings[arraySize]);
 			strBuff.setLength(0);
 		} else {
 			strings[arraySize] = new String(chars, start, l);
@@ -358,7 +358,7 @@ public class CSVReader implements Closeable {
 		if (arraySize == 0) {
 			return null;
 		}
-		System.out.println("e");
+//		System.out.println("e");
 		return strings;
 	}
 
