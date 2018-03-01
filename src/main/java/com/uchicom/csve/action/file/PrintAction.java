@@ -8,7 +8,6 @@ import javax.print.DocPrintJob;
 import javax.print.PrintException;
 import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
-import javax.print.ServiceUI;
 import javax.print.SimpleDoc;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
@@ -27,8 +26,7 @@ public class PrintAction extends UIAbstractAction {
 	 */
     public void actionPerformed(ActionEvent actionEvent) {
 
-    	PrintService servic = null;
-    	DocFlavor flavor = DocFlavor.INPUT_STREAM.POSTSCRIPT;
+     	DocFlavor flavor = DocFlavor.INPUT_STREAM.POSTSCRIPT;
     	   PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
     	   aset.add(MediaSizeName.ISO_A4);
     	   PrintService[] pservices =
@@ -50,10 +48,10 @@ public class PrintAction extends UIAbstractAction {
     	   }
 
     	   //これでダイアログが表示される。
-    	   PrintService service =  ServiceUI.printDialog(null, 50, 50,
-                   new PrintService[]{defaultService},defaultService,
-                   null,
-                   aset);
+//    	   PrintService service =  ServiceUI.printDialog(null, 50, 50,
+//                   new PrintService[]{defaultService},defaultService,
+//                   null,
+//                   aset);
 
     }
 

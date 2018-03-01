@@ -19,6 +19,6 @@ public class UIStore {
     public void putUI(Object key, Object uiObject) {
         this.map.put(key, uiObject);
     }
-    Map map = new HashMap();
+    Map<Object, Object> map = new HashMap<>();
 
 }

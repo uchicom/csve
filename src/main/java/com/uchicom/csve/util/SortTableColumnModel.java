@@ -36,7 +36,7 @@ public class SortTableColumnModel extends DefaultTableColumnModel {
 		tmpColumn = column;
 	}
 
-	public Comparator getComparator() {
+	public Comparator<CellInfo[]> getComparator() {
 
 		sortingList.clear();
 		sortingList.addAll(sortList);

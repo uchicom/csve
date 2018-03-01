@@ -17,7 +17,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 public class CellRenderer extends DefaultTableCellRenderer {
 
 
-	private JTextArea viewlabel = new JTextArea();
+
 	private JTextArea selectedField = new JTextArea();
 	private JTextArea selectedInitField = new JTextArea();
 	private JTextArea selectedFocusField = new JTextArea();

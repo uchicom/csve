@@ -18,7 +18,7 @@ public class FilterMouseListener implements MouseListener {
 	 * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
 	 */
 	public void mouseClicked(MouseEvent e) {
-		if (e.getClickCount() == 1 && e.getButton() == e.BUTTON3) {
+		if (e.getClickCount() == 1 && e.getButton() == MouseEvent.BUTTON3) {
 
 
 			JTableHeader header = (JTableHeader) e.getSource();

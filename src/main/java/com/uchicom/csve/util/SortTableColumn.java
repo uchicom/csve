@@ -18,7 +18,6 @@ public class SortTableColumn extends TableColumn implements FilterIf{
 	public static int SORT_TYPE_ASC = 1;
 	public static int SORT_TYPE_DESC = -1;
 	private boolean hold = false;
-	private int sortIndex = -1;
 	public void setSortEnd() {
 		this.isSort = false;
 	}

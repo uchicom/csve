@@ -1,7 +1,6 @@
 /// (c) 2006 uchicom
 package com.uchicom.csve.action;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
@@ -14,8 +13,10 @@ import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import com.uchicom.csve.util.CellInfo;
 import com.uchicom.csve.util.ListTableModel;
 import com.uchicom.csve.util.SeparateReader;
+import com.uchicom.csve.util.StringCellInfo;
 import com.uchicom.csve.util.UIAbstractAction;
 import com.uchicom.csve.window.CsvTagEditorUI;
 
@@ -34,8 +35,7 @@ public class OptionAction extends UIAbstractAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
         CsvTagEditorUI csvTagEditorUI = (CsvTagEditorUI)uiStore.getUI(CsvTagEditorUI.UI_KEY);
-        Component basisComponent = csvTagEditorUI.getBasisComponent();
-
+ 
         //プロパティファイルの読み込み
         File file = new File("./conf/csve.properties");
         if (file.exists()) {
@@ -72,7 +72,7 @@ public class OptionAction extends UIAbstractAction {
 
 
         //プロパティファイルのシート作成
-		List csvList = new ArrayList();
+		List<CellInfo[]> csvList = new ArrayList<>();
 			//一行ずつCSVを取得する
 		String[] lines = reader.getNextSeparateLine();
 		int columnCount = 0;
@@ -80,7 +80,11 @@ public class OptionAction extends UIAbstractAction {
 		    if (columnCount < lines.length) {
 		        columnCount = lines.length;
 		    }
-		    csvList.add(lines);
+		    CellInfo[] cells = new CellInfo[columnCount];
+		    csvList.add(cells);
+	    	for (int j = 0; j < columnCount; j++) {
+	    		cells[j] = new StringCellInfo(lines[j]);
+	    	}
 		    lines = reader.getNextSeparateLine();
 		}
 		//テーブル列モデル作成

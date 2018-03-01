@@ -198,6 +198,5 @@ public class SearchTable extends JTable {
 	 * @param filterIf
 	 */
 	public void filter(FilterIf filterIf) {
-		String target = filterIf.getFilter();
 	}
 }

@@ -14,7 +14,7 @@ import javax.swing.table.DefaultTableModel;
 public class CellListTableModel extends DefaultTableModel {
 
     /** Creates a new instance of ListTableModel */
-    public CellListTableModel(List rowList, int columnCount) {
+    public CellListTableModel(List<CellInfo[]> rowList, int columnCount) {
 
         this.rowList = rowList;
         this.columnCount = columnCount;
@@ -45,7 +45,7 @@ public class CellListTableModel extends DefaultTableModel {
         }
 
     }
-    public Class getColumnClass(int columnIndex) {
+    public Class<CellInfo> getColumnClass(int columnIndex) {
         return CellInfo.class;
     }
     public int  getColumnCount() {
@@ -69,8 +69,7 @@ public class CellListTableModel extends DefaultTableModel {
     public Point searchAndSelect(String target, int startRow, int startCol, boolean contain) {
 
     	//検索値からテーブルの中を検索する
-    	boolean result = false;
-    	for (int i = startRow; i < rowList.size(); i++) {
+     	for (int i = startRow; i < rowList.size(); i++) {
     		CellInfo[] cells = rowList.get(i);
     		for (int j = 0; j < cells.length; j++) {
     			if (!contain && i == startRow && j == 0) {
@@ -129,7 +128,7 @@ public class CellListTableModel extends DefaultTableModel {
      * 並び替え1
      * @param comparator
      */
-    public void sort(Comparator comparator) {
+    public void sort(Comparator<CellInfo[]> comparator) {
     	Collections.sort(rowList, comparator);
     }
 

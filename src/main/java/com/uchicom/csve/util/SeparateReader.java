@@ -65,7 +65,7 @@ public class SeparateReader {
         } catch(Exception e) {
             e.printStackTrace();
         }
-        List charList = new ArrayList();
+        List<String> charList = new ArrayList<>();
         if (line != null) {
             char[] lineChar = line.toCharArray();
             int iMaxChar = lineChar.length;

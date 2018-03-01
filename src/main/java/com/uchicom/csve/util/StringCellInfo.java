@@ -49,7 +49,7 @@ public class StringCellInfo extends AbstractCellInfo {
         return value.toString();
     }
 
-    public int compareTo(Object obj) {
+    public int compareTo(CellInfo obj) {
         StringCellInfo cell = (StringCellInfo)obj;
         if (cell == null) return -1;
         if (value == null) {

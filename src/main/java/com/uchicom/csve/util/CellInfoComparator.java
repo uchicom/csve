@@ -8,7 +8,7 @@ import java.util.List;
  * @author uchiyama
  *
  */
-public class CellInfoComparator implements Comparator {
+public class CellInfoComparator implements Comparator<CellInfo[]> {
 
 	int iMaxList = 0;
 	/** 並び替え列 */
@@ -36,9 +36,7 @@ public class CellInfoComparator implements Comparator {
 	/* (非 Javadoc)
 	 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
 	 */
-	public int compare(Object o1, Object o2) {
-		CellInfo[] cells1 = (CellInfo[])o1;
-		CellInfo[] cells2 = (CellInfo[])o2;
+	public int compare(CellInfo[] cells1, CellInfo[] cells2) {
 
 
 		//空文字は一番大きくしないと、並び替え使いずらい。

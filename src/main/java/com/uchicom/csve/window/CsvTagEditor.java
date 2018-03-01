@@ -14,7 +14,6 @@ import java.util.Properties;
 
 import javax.swing.Action;
 import javax.swing.DefaultCellEditor;
-import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -54,7 +53,6 @@ public class CsvTagEditor extends ResumeFrame implements CsvTagEditorUI {
 	/** Creates a new instance of CsvTagEditor */
 	public CsvTagEditor() {
 		super(Constants.CONF_FILE, Constants.PROP_KEY_CSVE);
-		this.self = this;
 		initComponents();
 	}
 
@@ -183,7 +181,7 @@ public class CsvTagEditor extends ResumeFrame implements CsvTagEditorUI {
 			// 行ヘッダはまだ敷居が高いな
 			// scrollPane.setRowHeaderView(new JList(rowHeads));
 			tabPane.add("Create(" + (tabPane.getTabCount() + 1) + ")", scrollPane);
-			self.pack();
+			pack();
 		} catch (Error error) {
 			error.printStackTrace();
 		}
@@ -205,9 +203,6 @@ public class CsvTagEditor extends ResumeFrame implements CsvTagEditorUI {
 		tabPane.add(tabName, new JScrollPane(table));
 	}
 
-
-	/** メイン画面 */
-	private JFrame self = null;
 	/** テーブル情報を格納しているタブ */
 	private JTabbedPane tabPane = new JTabbedPane(JTabbedPane.BOTTOM);
 	/** テーブルを保持するマップ */

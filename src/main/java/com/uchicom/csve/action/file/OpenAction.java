@@ -7,7 +7,6 @@ import java.io.File;
 import java.util.Properties;
 
 import javax.swing.JFileChooser;
-import javax.swing.JTabbedPane;
 
 import com.uchicom.csve.util.UIAbstractAction;
 import com.uchicom.csve.window.CsvTagEditorUI;
@@ -22,7 +21,6 @@ public class OpenAction extends UIAbstractAction {
 		try {
 			CsvTagEditorUI csvTagEditorUI = (CsvTagEditorUI) uiStore.getUI(CsvTagEditorUI.UI_KEY);
 			Component basisComponent = csvTagEditorUI.getBasisComponent();
-			JTabbedPane tabPane = csvTagEditorUI.getTabb();
 			//開くファイルを指定する画面を開く
 			JFileChooser chooser = new JFileChooser();
 			Properties properties = csvTagEditorUI.getProperties();

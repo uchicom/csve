@@ -5,7 +5,7 @@ package com.uchicom.csve.util;
  *
  * @author  uchiyama
  */
-public interface CellInfo extends java.lang.Comparable {
+public interface CellInfo extends java.lang.Comparable<CellInfo> {
 
     public Object getValue();
     public Object getBkValue();
