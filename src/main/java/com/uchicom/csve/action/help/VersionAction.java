@@ -1,13 +1,13 @@
 // (c) 2006 uchicom
-package com.uchicom.csve.action;
+package com.uchicom.csve.action.help;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 
 import javax.swing.JOptionPane;
 
-import com.uchicom.csve.CsvTagEditorUI;
 import com.uchicom.csve.util.UIAbstractAction;
+import com.uchicom.csve.window.CsvTagEditorUI;
 
 /**
  *

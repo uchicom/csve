@@ -5,7 +5,7 @@
  *
  */
 
-package com.uchicom.csve.action;
+package com.uchicom.csve.action.file;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -20,8 +20,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 
-import com.uchicom.csve.CsvTagEditor;
-import com.uchicom.csve.CsvTagEditorUI;
 import com.uchicom.csve.util.CellInfo;
 import com.uchicom.csve.util.CellListTableModel;
 import com.uchicom.csve.util.CellRenderer;
@@ -30,6 +28,8 @@ import com.uchicom.csve.util.SortTableColumn;
 import com.uchicom.csve.util.SortTableColumnModel;
 import com.uchicom.csve.util.StringCellInfo;
 import com.uchicom.csve.util.UIAbstractAction;
+import com.uchicom.csve.window.CsvTagEditor;
+import com.uchicom.csve.window.CsvTagEditorUI;
 
 /**
  *

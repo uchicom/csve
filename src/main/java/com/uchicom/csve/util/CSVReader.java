@@ -2,7 +2,6 @@
 package com.uchicom.csve.util;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,7 +31,6 @@ public class CSVReader implements Closeable {
 	int lnCount = 0;
 	int maxLnCount = 0;
 	String enc;
-	private ByteArrayOutputStream baos = new ByteArrayOutputStream(4 * 1024 * 1024);
 
 	/**
 	 * Creates a new instance of CVSReader
@@ -100,7 +98,6 @@ public class CSVReader implements Closeable {
 								index = iByte + 1;
 							} else if (!escapeOnFlg) {
 								if (lastChars != null) {
-									char[] temp = new char[lastChars.length + iByte - index];
 									StringBuffer strBuff = new StringBuffer(lastChars.length + iByte - index);
 									strBuff.append(lastChars);
 									if (iByte != 0) {
@@ -182,7 +179,6 @@ public class CSVReader implements Closeable {
 								} else if (!escapeOnFlg) {
 									if (lastChars != null) {
 
-										char[] temp = new char[lastChars.length + iByte - index];
 										StringBuffer strBuff = new StringBuffer(lastChars.length + iByte - index);
 										strBuff.append(lastChars);
 										if (iByte != 0) {

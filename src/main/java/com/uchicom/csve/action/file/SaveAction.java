@@ -1,5 +1,5 @@
 // (c) 2006 uchicom
-package com.uchicom.csve.action;
+package com.uchicom.csve.action.file;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -8,9 +8,10 @@ import java.util.List;
 import javax.swing.JFileChooser;
 import javax.swing.JTabbedPane;
 
-import com.uchicom.csve.CsvTagEditorUI;
 import com.uchicom.csve.util.CSVWriter;
+import com.uchicom.csve.util.CellInfo;
 import com.uchicom.csve.util.UIAbstractAction;
+import com.uchicom.csve.window.CsvTagEditorUI;
 
 /**
  *
@@ -44,7 +45,7 @@ public class SaveAction extends UIAbstractAction {
             tabPane.setTitleAt(tabPane.getSelectedIndex(), selectFile.getName());
 
             CSVWriter writer = new CSVWriter(selectFile, "SJIS");
-            List csvList = (List)csvTagEditorUI.getTableMap().get(new Integer(tabPane.getSelectedIndex()));
+            List<CellInfo[]> csvList = csvTagEditorUI.getTableMap().get(new Integer(tabPane.getSelectedIndex()));
             if(csvList == null) {
                System.out.println(tabPane.getSelectedComponent());
             }

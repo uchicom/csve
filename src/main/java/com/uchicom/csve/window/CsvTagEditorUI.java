@@ -1,5 +1,5 @@
 // (c) 2006 uchicom
-package com.uchicom.csve;
+package com.uchicom.csve.window;
 
 
 import java.awt.Component;
@@ -11,6 +11,7 @@ import java.util.Properties;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 
+import com.uchicom.csve.util.CellInfo;
 import com.uchicom.csve.util.SearchTable;
 import com.uchicom.ui.FileOpener;
 
@@ -29,7 +30,7 @@ public interface CsvTagEditorUI extends FileOpener {
     public Component getBasisComponent();
 
     public List<SearchTable> getTableList();
-    public  Map<Integer, List> getTableMap();
+    public  Map<Integer, List<CellInfo[]>> getTableMap();
     public Map<Integer, File> getFileMap();
     /**
      * タブペインを取得します。
@@ -43,7 +44,7 @@ public interface CsvTagEditorUI extends FileOpener {
      * @param table
      * @param list
      */
-    public void addTab(String tabName, JTable table, List list);
+    public void addTab(String tabName, JTable table, List<CellInfo[]> list);
 
     public SearchTable getSelectedTable();
 

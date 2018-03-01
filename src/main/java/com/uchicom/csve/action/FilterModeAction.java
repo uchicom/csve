@@ -4,9 +4,9 @@ package com.uchicom.csve.action;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 
-import com.uchicom.csve.CsvTagEditorUI;
 import com.uchicom.csve.util.SearchTable;
 import com.uchicom.csve.util.UIAbstractAction;
+import com.uchicom.csve.window.CsvTagEditorUI;
 
 /**
  * フィルターモードにテーブルを変更する

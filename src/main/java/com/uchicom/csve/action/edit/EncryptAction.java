@@ -1,5 +1,5 @@
 // (c) 2006 uchicom
-package com.uchicom.csve.action;
+package com.uchicom.csve.action.edit;
 import java.awt.event.ActionEvent;
 
 import com.uchicom.csve.util.UIAbstractAction;
@@ -8,15 +8,13 @@ import com.uchicom.csve.util.UIAbstractAction;
  *
  * @author uchiyama
  */
-public class PasteAction extends UIAbstractAction {
+public class EncryptAction extends UIAbstractAction {
 
-	public PasteAction() {
+	public EncryptAction() {
 		setEnabled(false);
 	}
 
-
     public void actionPerformed(ActionEvent actionEvent) {
-
 
     }
 }

@@ -1,45 +1,56 @@
 // (c) 2006 uchicom
-package com.uchicom.csve;
+package com.uchicom.csve.window;
 
 import java.awt.Component;
 import java.awt.Cursor;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.swing.Action;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 
+import com.uchicom.csve.Constants;
 import com.uchicom.csve.util.ActionUI;
 import com.uchicom.csve.util.CSVReader;
 import com.uchicom.csve.util.CellInfo;
 import com.uchicom.csve.util.CellListTableModel;
 import com.uchicom.csve.util.CellRenderer;
-import com.uchicom.csve.util.JMenuBarFactory;
 import com.uchicom.csve.util.SearchTable;
 import com.uchicom.csve.util.SortTableColumn;
 import com.uchicom.csve.util.SortTableColumnModel;
 import com.uchicom.csve.util.StringCellInfo;
 import com.uchicom.csve.util.TextAreaCellEditor;
+import com.uchicom.csve.util.UIAbstractAction;
 import com.uchicom.csve.util.UIStore;
 import com.uchicom.ui.FileOpener;
 import com.uchicom.ui.ResumeFrame;
+import com.uchicom.util.ResourceUtil;
 
 /**
  *
  * @author uchiyama
  */
 public class CsvTagEditor extends ResumeFrame implements CsvTagEditorUI {
+
+	private Properties resource = new Properties();
+	private Map<String, UIAbstractAction> actionMap = new HashMap<>();
+	
+	
 	/** Creates a new instance of CsvTagEditor */
 	public CsvTagEditor() {
 		super(Constants.CONF_FILE, Constants.PROP_KEY_CSVE);
@@ -49,22 +60,82 @@ public class CsvTagEditor extends ResumeFrame implements CsvTagEditorUI {
 
 	private void initComponents() {
 		setTitle("CsvTagEditor");
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		resource = ResourceUtil.createProperties(
+				getClass().getClassLoader().getResourceAsStream("com/uchicom/csve/resource.properties"), "UTF-8");
+    	
 		try {
-			uiStore.putUI(ActionUI.UI_KEY, new ActionUI());
+			uiStore.putUI(ActionUI.UI_KEY, new ActionUI(resource));
 		} catch (IOException e) {
 			return;
 		}
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		uiStore.putUI(UI_KEY, this);
 
 
 		FileOpener.installDragAndDrop(tabPane, this);
 		getContentPane().add(tabPane);
-		JMenuBarFactory menuBarFactory = new JMenuBarFactory();
-		JMenuBar menuBar = menuBarFactory.createJMenuBar(uiStore);
-
-		setJMenuBar(menuBar);
+    	initMenu();
         pack();
+	}
+	private void initMenu() {
+		JMenuBar menuBar = new JMenuBar();
+		String[] menus = resource.getProperty("menu").split(",");
+		for (String menuProp : menus) {
+			menuBar.add(createMenu("menu." + menuProp));
+		}
+		setJMenuBar(menuBar);
+	}
+
+	private JMenuItem createMenu(String key) {
+		String name = key + ".NAME";
+		if (resource.containsKey(name)) {
+			JMenu menu = new JMenu(resource.getProperty(name));
+			if (resource.containsKey(key)) {
+				System.out.println(key);
+				String[] childMenu = resource.getProperty(key).split(",");
+				for (String child : childMenu) {
+					if ("".equals(child))
+						continue;
+					if (child.charAt(0) == '[' && child.charAt(child.length() - 1) == ']') {
+						String special = child.substring(1, child.length() - 1);
+						if (special.length() == 0)
+							continue;
+						if (special.length() == 1) {
+							// ラインセパレータ
+							if ("-".equals(special)) {
+								menu.addSeparator();
+								continue;
+							}
+						}
+					}
+					menu.add(createMenu(key + "." + child));
+				}
+			}
+			return menu;
+		} else {
+			try {
+				String actionKey = key + ".ACTION";
+				System.out.println(actionKey);
+				if (resource.containsKey(actionKey)) {
+					return new JMenuItem(createAction(resource.getProperty(actionKey)));
+				}
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+		}
+		return null;
+	}
+
+	private Action createAction(String className)
+			throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+			NoSuchMethodException, SecurityException, ClassNotFoundException {
+		UIAbstractAction action = actionMap.get(className);
+		if (action == null) {
+			action = (UIAbstractAction) Class.forName(className).newInstance();//.getConstructor(UIStore.class).newInstance(uiStore);
+			action.installUI(uiStore);
+			actionMap.put(className, action);
+		}
+		return action;
 	}
 
 	/**
@@ -128,7 +199,7 @@ public class CsvTagEditor extends ResumeFrame implements CsvTagEditorUI {
 	/**
 	 * タブを追加する
 	 */
-	public void addTab(String tabName, JTable table, List csvList) {
+	public void addTab(String tabName, JTable table, List<CellInfo[]> csvList) {
 		map.put(new Integer(tabPane.getTabCount()), csvList);
 		// ファイル名でタブに追加する
 		tabPane.add(tabName, new JScrollPane(table));
@@ -140,7 +211,7 @@ public class CsvTagEditor extends ResumeFrame implements CsvTagEditorUI {
 	/** テーブル情報を格納しているタブ */
 	private JTabbedPane tabPane = new JTabbedPane(JTabbedPane.BOTTOM);
 	/** テーブルを保持するマップ */
-	private Map<Integer, List> map = new HashMap<>();
+	private Map<Integer, List<CellInfo[]>> map = new HashMap<>();
 
 	/** ファイルパスを保持するマップ */
 	private Map<Integer,  File> fileMap = new HashMap<>();
@@ -195,7 +266,7 @@ public class CsvTagEditor extends ResumeFrame implements CsvTagEditorUI {
 	 *
 	 * @see cymsgk.CsvTagEditorUI#getTableMap()
 	 */
-	public Map<Integer, List> getTableMap() {
+	public Map<Integer, List<CellInfo[]>> getTableMap() {
 		return map;
 	}
 

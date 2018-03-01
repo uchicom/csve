@@ -24,7 +24,7 @@ public class CSVWriter {
         writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), enc));
     }
 
-    public void write(List csvList) throws IOException {
+    public void write(List<CellInfo[]> csvList) throws IOException {
         int iMaxList = csvList.size();
        for (int iList = 0; iList < iMaxList; iList++) {
            CellInfo[] strings = (CellInfo[])csvList.get(iList);

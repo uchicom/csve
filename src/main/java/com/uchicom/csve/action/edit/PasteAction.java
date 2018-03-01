@@ -1,5 +1,5 @@
 // (c) 2006 uchicom
-package com.uchicom.csve.action;
+package com.uchicom.csve.action.edit;
 import java.awt.event.ActionEvent;
 
 import com.uchicom.csve.util.UIAbstractAction;
@@ -8,13 +8,15 @@ import com.uchicom.csve.util.UIAbstractAction;
  *
  * @author uchiyama
  */
-public class SaveAllAction extends UIAbstractAction {
+public class PasteAction extends UIAbstractAction {
 
-	public SaveAllAction() {
+	public PasteAction() {
 		setEnabled(false);
 	}
 
+
     public void actionPerformed(ActionEvent actionEvent) {
+
 
     }
 }

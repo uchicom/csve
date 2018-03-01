@@ -1,16 +1,14 @@
 // (c) 2006 uchicom
 package com.uchicom.csve;
 
+import com.uchicom.csve.window.CsvTagEditor;
+
 /**
  *
  * @author UCHIYAMA
  */
 public class Main {
-
-    /** Creates a new instance of Main */
-    public Main() {
-    }
-
+	
     /**
      * @param args the command line arguments
      */

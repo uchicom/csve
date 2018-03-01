@@ -7,9 +7,9 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import com.uchicom.csve.CsvTagEditorUI;
 import com.uchicom.csve.util.SearchTable;
 import com.uchicom.csve.util.UIAbstractAction;
+import com.uchicom.csve.window.CsvTagEditorUI;
 
 /**
  * @author uchiyama

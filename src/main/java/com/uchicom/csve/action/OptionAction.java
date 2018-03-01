@@ -14,10 +14,10 @@ import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
-import com.uchicom.csve.CsvTagEditorUI;
 import com.uchicom.csve.util.ListTableModel;
 import com.uchicom.csve.util.SeparateReader;
 import com.uchicom.csve.util.UIAbstractAction;
+import com.uchicom.csve.window.CsvTagEditorUI;
 
 /**
  * オプション画面を表示するクラス

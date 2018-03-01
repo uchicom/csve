@@ -1,5 +1,5 @@
 // (c) 2006 uchicom
-package com.uchicom.csve.action;
+package com.uchicom.csve.action.file;
 import java.awt.event.ActionEvent;
 
 import javax.print.Doc;
