@@ -218,7 +218,7 @@ public class CsvTagEditor extends ResumeFrame implements CsvTagEditorUI {
 	/*
 	 * (非 Javadoc)
 	 *
-	 * @see cymsgk.CsvTagEditorUI#getTableList()
+	 * @see com.uchicom.csve.CsvTagEditorUI#getTableList()
 	 */
 	public List<SearchTable> getTableList() {
 		// マップのコレクションをリストに入れ替える
@@ -250,7 +250,7 @@ public class CsvTagEditor extends ResumeFrame implements CsvTagEditorUI {
 	/*
 	 * (非 Javadoc)
 	 *
-	 * @see cymsgk.CsvTagEditorUI#getTabb()
+	 * @see com.uchicom.csve.CsvTagEditorUI#getTabb()
 	 */
 	public JTabbedPane getTabb() {
 		return tabPane;
@@ -259,7 +259,7 @@ public class CsvTagEditor extends ResumeFrame implements CsvTagEditorUI {
 	/*
 	 * (非 Javadoc)
 	 *
-	 * @see cymsgk.CsvTagEditorUI#getTableMap()
+	 * @see com.uchicom.csve.CsvTagEditorUI#getTableMap()
 	 */
 	public Map<Integer, List<CellInfo[]>> getTableMap() {
 		return map;

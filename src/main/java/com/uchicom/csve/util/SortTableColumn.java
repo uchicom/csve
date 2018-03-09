@@ -94,7 +94,7 @@ public class SortTableColumn extends TableColumn implements FilterIf{
 
 	List<SortTableColumn> sortList = null;
 	/* (非 Javadoc)
-	 * @see cymsgk.util.FilterIf#setFilter(java.lang.String)
+	 * @see com.uchicom.csve.util.FilterIf#setFilter(java.lang.String)
 	 */
 	public void setFilter(String filterValue) {
 		if (filterValue != null) {
