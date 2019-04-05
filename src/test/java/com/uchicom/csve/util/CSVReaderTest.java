@@ -1,9 +1,12 @@
 // (c) 2017 uchicom
 package com.uchicom.csve.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
 
 import org.junit.Test;
 
@@ -13,11 +16,14 @@ import org.junit.Test;
  */
 public class CSVReaderTest {
 
+	/**
+	 * 
+	 */
 	@Test
 	public void getNextCsvLine1() {
 		String string = "1,2,3,4";
 		ByteArrayInputStream bais = new ByteArrayInputStream(string.getBytes());
-		try (CSVReader reader = new CSVReader(bais, "utf-8");){
+		try (CSVReader reader = new CSVReader(bais, StandardCharsets.UTF_8);) {
 
 			String[] result = reader.getNextCsvLine(4, true);
 			assertEquals(4, result.length);
@@ -31,11 +37,12 @@ public class CSVReaderTest {
 			fail();
 		}
 	}
+
 	@Test
 	public void getNextCsvLine2() {
 		String string = "あ,い,う,え";
 		ByteArrayInputStream bais = new ByteArrayInputStream(string.getBytes());
-		try (CSVReader reader = new CSVReader(bais, "utf-8");){
+		try (CSVReader reader = new CSVReader(bais, StandardCharsets.UTF_8);) {
 
 			String[] result = reader.getNextCsvLine(4, true);
 			assertEquals(4, result.length);
@@ -49,11 +56,12 @@ public class CSVReaderTest {
 			fail();
 		}
 	}
+
 	@Test
 	public void getNextCsvLine3() {
 		String string = "あ,い,う,え\n1,2,3,4";
 		ByteArrayInputStream bais = new ByteArrayInputStream(string.getBytes());
-		try (CSVReader reader = new CSVReader(bais, "utf-8");){
+		try (CSVReader reader = new CSVReader(bais, StandardCharsets.UTF_8);) {
 
 			String[] result = reader.getNextCsvLine(4, true);
 			assertEquals(4, result.length);
@@ -73,11 +81,12 @@ public class CSVReaderTest {
 			fail();
 		}
 	}
+
 	@Test
 	public void getNextCsvLine4() {
 		String string = ",,,";
 		ByteArrayInputStream bais = new ByteArrayInputStream(string.getBytes());
-		try (CSVReader reader = new CSVReader(bais, "utf-8");){
+		try (CSVReader reader = new CSVReader(bais, StandardCharsets.UTF_8);) {
 
 			String[] result = reader.getNextCsvLine(4, true);
 			assertEquals(4, result.length);
@@ -91,18 +100,19 @@ public class CSVReaderTest {
 			fail();
 		}
 	}
+
 	@Test
 	public void getNextCsvLine5() {
 		String string = "\"a\",\",\",\"\n\",a\"\\\\\"b";
 		ByteArrayInputStream bais = new ByteArrayInputStream(string.getBytes());
-		try (CSVReader reader = new CSVReader(bais, "utf-8");){
+		try (CSVReader reader = new CSVReader(bais, StandardCharsets.UTF_8);) {
 
 			String[] result = reader.getNextCsvLine(4, true);
 			assertEquals(4, result.length);
 			assertEquals("a", result[0]);
 			assertEquals(",", result[1]);
 			assertEquals("\n", result[2]);
-			assertEquals("a\\b", result[3]);
+			assertEquals("a\"\\\\\"b", result[3]);
 			assertNull(reader.getNextCsvLine(4, true));
 		} catch (Exception e) {
 			e.printStackTrace();

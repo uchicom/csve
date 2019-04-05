@@ -6,6 +6,7 @@ import java.awt.Cursor;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,10 +47,13 @@ import com.uchicom.util.ResourceUtil;
  */
 public class CsvTagEditor extends ResumeFrame implements CsvTagEditorUI {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Properties resource = new Properties();
 	private Map<String, UIAbstractAction> actionMap = new HashMap<>();
-	
-	
+
 	/** Creates a new instance of CsvTagEditor */
 	public CsvTagEditor() {
 		super(Constants.CONF_FILE, Constants.PROP_KEY_CSVE);
@@ -57,11 +61,11 @@ public class CsvTagEditor extends ResumeFrame implements CsvTagEditorUI {
 	}
 
 	private void initComponents() {
-		setTitle("CsvTagEditor");
+		setTitle("csve");
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		resource = ResourceUtil.createProperties(
 				getClass().getClassLoader().getResourceAsStream("com/uchicom/csve/resource.properties"), "UTF-8");
-    	
+
 		try {
 			uiStore.putUI(ActionUI.UI_KEY, new ActionUI(resource));
 		} catch (IOException e) {
@@ -69,12 +73,12 @@ public class CsvTagEditor extends ResumeFrame implements CsvTagEditorUI {
 		}
 		uiStore.putUI(UI_KEY, this);
 
-
 		FileOpener.installDragAndDrop(tabPane, this);
 		getContentPane().add(tabPane);
-    	initMenu();
-        pack();
+		initMenu();
+		pack();
 	}
+
 	private void initMenu() {
 		JMenuBar menuBar = new JMenuBar();
 		String[] menus = resource.getProperty("menu").split(",");
@@ -129,7 +133,7 @@ public class CsvTagEditor extends ResumeFrame implements CsvTagEditorUI {
 			NoSuchMethodException, SecurityException, ClassNotFoundException {
 		UIAbstractAction action = actionMap.get(className);
 		if (action == null) {
-			action = (UIAbstractAction) Class.forName(className).newInstance();//.getConstructor(UIStore.class).newInstance(uiStore);
+			action = (UIAbstractAction) Class.forName(className).newInstance();// .getConstructor(UIStore.class).newInstance(uiStore);
 			action.installUI(uiStore);
 			actionMap.put(className, action);
 		}
@@ -174,7 +178,6 @@ public class CsvTagEditor extends ResumeFrame implements CsvTagEditorUI {
 			table.setColumnSelectionAllowed(true);
 			table.setRowSelectionAllowed(true);
 
-
 			list.add(table);
 			map.put(new Integer(tabPane.getTabCount()), cvsList);
 			JScrollPane scrollPane = new JScrollPane(table);
@@ -209,7 +212,7 @@ public class CsvTagEditor extends ResumeFrame implements CsvTagEditorUI {
 	private Map<Integer, List<CellInfo[]>> map = new HashMap<>();
 
 	/** ファイルパスを保持するマップ */
-	private Map<Integer,  File> fileMap = new HashMap<>();
+	private Map<Integer, File> fileMap = new HashMap<>();
 	/** ユーザーインターフェース保持クラス */
 	private UIStore uiStore = new UIStore();
 
@@ -275,7 +278,9 @@ public class CsvTagEditor extends ResumeFrame implements CsvTagEditorUI {
 		return fileMap;
 	}
 
-	/* (非 Javadoc)
+	/*
+	 * (非 Javadoc)
+	 * 
 	 * @see com.uchicom.ui.FileOpener#open(java.io.File)
 	 */
 	@Override
@@ -301,19 +306,19 @@ public class CsvTagEditor extends ResumeFrame implements CsvTagEditorUI {
 		//
 		if (file.exists()) {
 			config.put("path", file.getCanonicalPath());
-			//SJIS固定でファイルを開く、そのうち文字コード自動判定とか入れるか。
-			CSVReader reader = new CSVReader(file, "UTF-8");
-			//CSVファイルを格納するリストを作成
+			// SJIS固定でファイルを開く、そのうち文字コード自動判定とか入れるか。
+			CSVReader reader = new CSVReader(file, StandardCharsets.UTF_8);
+			// CSVファイルを格納するリストを作成
 			CellInfo[] lines = reader.getNextCsvLineCellInfo();
 
-			//一行ずつCSVを取得する
+			// 一行ずつCSVを取得する
 
 			int columnCount = 0;
 			List<CellInfo[]> csvList = new ArrayList<CellInfo[]>();
 			CellInfo[] tmp = lines;
 			while (lines != null) {
 
-				//ファイルのオープンでエラーが発生している。
+				// ファイルのオープンでエラーが発生している。
 
 				if (columnCount < lines.length) {
 					columnCount = lines.length;
@@ -346,33 +351,35 @@ public class CsvTagEditor extends ResumeFrame implements CsvTagEditorUI {
 				column.setModelIndex(i);
 				column.setIdentifier(String.valueOf(i));
 				column.setCellRenderer(new CellRenderer());
-				//tableColumnを使う場合はcellEditorを設定してあげないとちゃんと動かない
+				// tableColumnを使う場合はcellEditorを設定してあげないとちゃんと動かない
 				column.setCellEditor(new TextAreaCellEditor());
 				columnModel.addColumn(column);
 
 			}
-			//ファイルのクローズ処理をする
+			// ファイルのクローズ処理をする
 			reader.close();
-			//テーブルモデルと、列数を格納する
+			// テーブルモデルと、列数を格納する
 			SearchTable table = new SearchTable(new CellListTableModel(csvList, columnCount), columnModel);
-			//テーブルのリサイズをなしにする
+			// テーブルのリサイズをなしにする
 			table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-			//列選択可能にする
+			// 列選択可能にする
 			table.setColumnSelectionAllowed(true);
-			//行選択可能にする
+			// 行選択可能にする
 			table.setRowSelectionAllowed(true);
 			getTableMap().put(new Integer(tabPane.getTabCount()), csvList);
 			getFileMap().put(tabPane.getTabCount(), file);
 			getTableList().add(table);
-			//ファイル名でタブに追加する
+			// ファイル名でタブに追加する
 			tabPane.add(file.getName(), new JScrollPane(table));
 			tabPane.setSelectedIndex(tabPane.indexOfTab(file.getName()));
-			//画面を整形して表示する
+			// 画面を整形して表示する
 			pack();
 		}
 	}
 
-	/* (非 Javadoc)
+	/*
+	 * (非 Javadoc)
+	 * 
 	 * @see com.uchicom.ui.FileOpener#open(java.util.List)
 	 */
 	@Override

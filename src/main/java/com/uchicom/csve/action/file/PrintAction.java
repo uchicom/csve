@@ -1,5 +1,6 @@
 // (c) 2006 uchicom
 package com.uchicom.csve.action.file;
+
 import java.awt.event.ActionEvent;
 
 import javax.print.Doc;
@@ -22,37 +23,39 @@ import com.uchicom.csve.util.UIAbstractAction;
 public class PrintAction extends UIAbstractAction {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * プリントする(テスト用にプリンターが必要だけどどうしようかなGorstscriptが使えるか？)
 	 */
-    public void actionPerformed(ActionEvent actionEvent) {
+	public void actionPerformed(ActionEvent actionEvent) {
 
-     	DocFlavor flavor = DocFlavor.INPUT_STREAM.POSTSCRIPT;
-    	   PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
-    	   aset.add(MediaSizeName.ISO_A4);
-    	   PrintService[] pservices =
-    	                 PrintServiceLookup.lookupPrintServices(flavor, aset);
-    	   PrintService defaultService = PrintServiceLookup.lookupDefaultPrintService();
+		DocFlavor flavor = DocFlavor.INPUT_STREAM.POSTSCRIPT;
+		PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
+		aset.add(MediaSizeName.ISO_A4);
+		PrintService[] pservices = PrintServiceLookup.lookupPrintServices(flavor, aset);
+		PrintService defaultService = PrintServiceLookup.lookupDefaultPrintService();
 
+		System.out.println("DefaultService:" + defaultService);
+		System.out.println("PrintService:" + pservices.length);
+		if (pservices.length > 0) {
+			DocPrintJob pj = pservices[0].createPrintJob();
+			// InputStreamDoc is an implementation of the Doc interface //
+			Doc doc = new SimpleDoc("test.ps", flavor, null);
+			try {
+				pj.print(doc, aset);
+			} catch (PrintException e) {
+			}
+		}
 
-
-    	   System.out.println("DefaultService:" + defaultService);
-    	   System.out.println("PrintService:" + pservices.length );
-    	   if (pservices.length > 0) {
-    	       DocPrintJob pj = pservices[0].createPrintJob();
-    	       // InputStreamDoc is an implementation of the Doc interface //
-    	       Doc doc = new SimpleDoc("test.ps", flavor,null);
-    	       try {
-    	             pj.print(doc, aset);
-    	        } catch (PrintException e) {
-    	        }
-    	   }
-
-    	   //これでダイアログが表示される。
+		// これでダイアログが表示される。
 //    	   PrintService service =  ServiceUI.printDialog(null, 50, 50,
 //                   new PrintService[]{defaultService},defaultService,
 //                   null,
 //                   aset);
 
-    }
+	}
 
 }

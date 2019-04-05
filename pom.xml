@@ -4,7 +4,7 @@
   <artifactId>csve</artifactId>
   <version>1.0.0</version>
   	<name>csve</name>
-	<description>web viewer</description>
+	<description>csv editor</description>
 	<url>https://uchicom.com/csve.htm</url>
 	<licenses>
 		<license>

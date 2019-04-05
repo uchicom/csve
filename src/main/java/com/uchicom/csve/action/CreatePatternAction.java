@@ -20,15 +20,22 @@ import com.uchicom.csve.window.CsvTagEditorUI;
  */
 public class CreatePatternAction extends UIAbstractAction {
 
-	/* (非 Javadoc)
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/*
+	 * (非 Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	public void actionPerformed(ActionEvent e) {
-		CsvTagEditorUI csvTagEditorUI = (CsvTagEditorUI) uiStore
-		.getUI(CsvTagEditorUI.UI_KEY);
+		CsvTagEditorUI csvTagEditorUI = (CsvTagEditorUI) uiStore.getUI(CsvTagEditorUI.UI_KEY);
 		Component basisComponent = csvTagEditorUI.getBasisComponent();
 		SearchTable searchTable = csvTagEditorUI.getSelectedTable();
-		//選択している行を解析してパターンを作成する
+		// 選択している行を解析してパターンを作成する
 		int selectedRow = searchTable.getSelectedRow();
 		int columnCount = searchTable.getColumnCount();
 		list = new ArrayList<CellInfo[]>();
@@ -42,11 +49,11 @@ public class CreatePatternAction extends UIAbstractAction {
 		}
 	}
 
-
 	List<CellInfo[]> list = null;
 
 	/**
 	 * 再帰呼び出しでパターンを作成する
+	 * 
 	 * @param col
 	 * @param lastCount
 	 * @param cells
@@ -54,27 +61,29 @@ public class CreatePatternAction extends UIAbstractAction {
 	 * @param selectedRow
 	 */
 	private void getNext(int col, int lastCount, CellInfo[] cells, SearchTable table, int selectedRow) {
-		if (lastCount < 0) return;
-		System.out.println(col+":"+lastCount);
-		CellInfo cell = (CellInfo)table.getValueAt(selectedRow, col);
+		if (lastCount < 0)
+			return;
+		System.out.println(col + ":" + lastCount);
+		CellInfo cell = (CellInfo) table.getValueAt(selectedRow, col);
 		String[] pats = cell.toString().split("/");
 		for (int i = 0; i < pats.length; i++) {
 			if (lastCount == 0) {
-				//最後のセルならパターンを設定して行追加
+				// 最後のセルならパターンを設定して行追加
 				CellInfo[] copyCells = copyCellInfo(cells);
 				copyCells[col] = new StringCellInfo(pats[i]);
 				copyCells[col].addStatus(CellInfo.INSERTED);
 				list.add(copyCells);
 			} else {
-				//最後のセルじゃなければ再帰呼び出し
+				// 最後のセルじゃなければ再帰呼び出し
 				cells[col] = new StringCellInfo(pats[i]);
-				getNext(col+1, lastCount-1, cells, table, selectedRow);
+				getNext(col + 1, lastCount - 1, cells, table, selectedRow);
 			}
 		}
 	}
 
 	/**
 	 * セルのコピーを作成する
+	 * 
 	 * @param cells
 	 * @return
 	 */

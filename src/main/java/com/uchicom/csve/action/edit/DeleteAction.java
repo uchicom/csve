@@ -1,5 +1,6 @@
 // (c) 2006 uchicom
 package com.uchicom.csve.action.edit;
+
 import java.awt.event.ActionEvent;
 
 import com.uchicom.csve.util.SearchTable;
@@ -12,12 +13,16 @@ import com.uchicom.csve.window.CsvTagEditorUI;
  */
 public class DeleteAction extends UIAbstractAction {
 
-    public void actionPerformed(ActionEvent actionEvent) {
-		CsvTagEditorUI csvTagEditorUI = (CsvTagEditorUI) uiStore
-		.getUI(CsvTagEditorUI.UI_KEY);
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public void actionPerformed(ActionEvent actionEvent) {
+		CsvTagEditorUI csvTagEditorUI = (CsvTagEditorUI) uiStore.getUI(CsvTagEditorUI.UI_KEY);
 
 		SearchTable searchTable = csvTagEditorUI.getSelectedTable();
 		searchTable.removeRow();
 
-    }
+	}
 }

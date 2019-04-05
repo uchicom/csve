@@ -9,8 +9,12 @@ import javax.swing.table.TableColumn;
  * @author uchiyama
  *
  */
-public class SortTableColumn extends TableColumn implements FilterIf{
+public class SortTableColumn extends TableColumn implements FilterIf {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	String filterValue = null;
 
 	boolean isSort = false;
@@ -18,6 +22,7 @@ public class SortTableColumn extends TableColumn implements FilterIf{
 	public static int SORT_TYPE_ASC = 1;
 	public static int SORT_TYPE_DESC = -1;
 	private boolean hold = false;
+
 	public void setSortEnd() {
 		this.isSort = false;
 	}
@@ -25,19 +30,19 @@ public class SortTableColumn extends TableColumn implements FilterIf{
 	public int getSortType() {
 		return sortType;
 	}
+
 	public int getSorted() {
 		if (!isSort) {
-			//未ソートの場合は0
+			// 未ソートの場合は0
 			return 0;
 		} else if (sortType > 0) {
-			//ソート済みで昇順なら1
+			// ソート済みで昇順なら1
 			return 1;
 		} else {
-			//ソート済みで降順なら
+			// ソート済みで降順なら
 			return 2;
 		}
 	}
-
 
 	public void setSort(boolean bKeep) {
 		if (isSort) {
@@ -69,19 +74,19 @@ public class SortTableColumn extends TableColumn implements FilterIf{
 	public Object getHeaderValue() {
 		String obj = super.getHeaderValue().toString();
 		if (isSort) {
-		if (hold) {
-			if (sortType == SORT_TYPE_ASC) {
-				obj = obj + "△" + sortList.indexOf(this);
-			} else if (sortType == SORT_TYPE_DESC){
-				obj = obj + "▽" + sortList.indexOf(this);
+			if (hold) {
+				if (sortType == SORT_TYPE_ASC) {
+					obj = obj + "△" + sortList.indexOf(this);
+				} else if (sortType == SORT_TYPE_DESC) {
+					obj = obj + "▽" + sortList.indexOf(this);
+				}
+			} else {
+				if (sortType == SORT_TYPE_ASC) {
+					obj = obj + "▲";
+				} else if (sortType == SORT_TYPE_DESC) {
+					obj = obj + "▼";
+				}
 			}
-		} else {
-			if (sortType == SORT_TYPE_ASC) {
-				obj = obj + "▲";
-			} else if (sortType == SORT_TYPE_DESC){
-				obj = obj + "▼";
-			}
-		}
 		} else {
 			return super.getHeaderValue();
 		}
@@ -93,13 +98,16 @@ public class SortTableColumn extends TableColumn implements FilterIf{
 	}
 
 	List<SortTableColumn> sortList = null;
-	/* (非 Javadoc)
+
+	/*
+	 * (非 Javadoc)
+	 * 
 	 * @see com.uchicom.csve.util.FilterIf#setFilter(java.lang.String)
 	 */
 	public void setFilter(String filterValue) {
 		if (filterValue != null) {
-			//ここでフィルター用のレンダラーを設定するか、レンダラーの中の設定でフィルター値を設定するかだな。
-			//setHeaderRenderer(headerRenderer)
+			// ここでフィルター用のレンダラーを設定するか、レンダラーの中の設定でフィルター値を設定するかだな。
+			// setHeaderRenderer(headerRenderer)
 		}
 		this.filterValue = filterValue;
 
@@ -108,6 +116,5 @@ public class SortTableColumn extends TableColumn implements FilterIf{
 	public String getFilter() {
 		return this.filterValue;
 	}
-
 
 }

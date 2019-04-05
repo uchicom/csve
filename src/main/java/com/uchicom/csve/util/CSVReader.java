@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -37,20 +38,24 @@ public class CSVReader implements Closeable {
 	 * 
 	 * @throws FileNotFoundException
 	 */
-	public CSVReader(String fileName, String enc) throws FileNotFoundException {
+	public CSVReader(String fileName, String enc) throws Exception {
 		this(new File(fileName), enc);
 	}
 
-	public CSVReader(File file, String enc) throws FileNotFoundException {
+	public CSVReader(File file, String enc) throws Exception {
 		this(new FileInputStream(file), enc);
 	}
 
-	public CSVReader(InputStream is, String enc) {
-		try {
-			bis = new BufferedReader(new InputStreamReader(is, enc));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	public CSVReader(File file, Charset charset) throws FileNotFoundException {
+		this(new FileInputStream(file), charset);
+	}
+	
+	public CSVReader(InputStream is, String enc) throws Exception {
+		this(is, Charset.forName(enc));
+	}
+
+	public CSVReader(InputStream is, Charset charset) {
+		bis = new BufferedReader(new InputStreamReader(is, charset));
 	}
 
 	/**
@@ -59,7 +64,7 @@ public class CSVReader implements Closeable {
 	 * @param enc
 	 * @throws IOException
 	 */
-	public CSVReader(URL url, String enc) throws IOException {
+	public CSVReader(URL url, String enc) throws Exception {
 		this(url.openStream(), enc);
 	}
 
@@ -288,11 +293,16 @@ public class CSVReader implements Closeable {
 				if (chars[index] == '\"') {
 					escape = false;
 					index++;
+
 					continue;
 				}
 			} else if (chars[index] == '\"') {
-				escape = true;
-				start = index + 1;
+				if (start >= index) {
+					start = index + 1;
+					escape = true;
+				} else {
+					l++;
+				}
 				index++;
 				continue;
 			} else if (chars[index] == ',' || chars[index] == '\n') {
@@ -344,7 +354,6 @@ public class CSVReader implements Closeable {
 		}
 
 		if (strBuff.length() > 0) {
-			strBuff.append(new String(chars, start, l));
 			strings[arraySize] = strBuff.toString();
 //			System.out.println(arraySize + ":" + strings[arraySize]);
 			strBuff.setLength(0);

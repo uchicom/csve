@@ -13,14 +13,21 @@ import com.uchicom.csve.window.CsvTagEditorUI;
  */
 public class AddRowAction extends UIAbstractAction {
 
-	/* (非 Javadoc)
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/*
+	 * (非 Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	public void actionPerformed(ActionEvent e) {
 		// TODO 自動生成されたメソッド・スタブ
 
-		CsvTagEditorUI csvTagEditorUI = (CsvTagEditorUI) uiStore
-		.getUI(CsvTagEditorUI.UI_KEY);
+		CsvTagEditorUI csvTagEditorUI = (CsvTagEditorUI) uiStore.getUI(CsvTagEditorUI.UI_KEY);
 		SearchTable searchTable = csvTagEditorUI.getSelectedTable();
 		searchTable.addRow();
 	}

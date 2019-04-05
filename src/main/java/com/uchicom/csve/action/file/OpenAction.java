@@ -17,11 +17,16 @@ import com.uchicom.csve.window.CsvTagEditorUI;
  */
 public class OpenAction extends UIAbstractAction {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public void actionPerformed(ActionEvent actionEvent) {
 		try {
 			CsvTagEditorUI csvTagEditorUI = (CsvTagEditorUI) uiStore.getUI(CsvTagEditorUI.UI_KEY);
 			Component basisComponent = csvTagEditorUI.getBasisComponent();
-			//開くファイルを指定する画面を開く
+			// 開くファイルを指定する画面を開く
 			JFileChooser chooser = new JFileChooser();
 			Properties properties = csvTagEditorUI.getProperties();
 			String path = properties.getProperty("path");
@@ -29,7 +34,7 @@ public class OpenAction extends UIAbstractAction {
 				chooser.setSelectedFile(new File(path));
 			}
 			int result = chooser.showOpenDialog(basisComponent);
-			//開いたファイルをオブジェクトで取得する
+			// 開いたファイルをオブジェクトで取得する
 			if (result == JFileChooser.APPROVE_OPTION) {
 				File selectFile = chooser.getSelectedFile();
 

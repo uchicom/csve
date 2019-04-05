@@ -16,14 +16,17 @@ import javax.swing.table.DefaultTableCellRenderer;
  */
 public class CellRenderer extends DefaultTableCellRenderer {
 
-
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	private JTextArea selectedField = new JTextArea();
 	private JTextArea selectedInitField = new JTextArea();
 	private JTextArea selectedFocusField = new JTextArea();
 	private JTextArea selectedFocusInitField = new JTextArea();
 	private JTextArea focusField = new JTextArea();
-	/** 通常表示のフィールド*/
+	/** 通常表示のフィールド */
 	private JTextArea normalField = new JTextArea();
 	/** 追加した行のフィールド */
 	private JTextArea insertField = new JTextArea();
@@ -65,73 +68,77 @@ public class CellRenderer extends DefaultTableCellRenderer {
 		updateModifyField.setOpaque(true);
 
 	}
-/* (非 Javadoc)
- * @see javax.swing.table.DefaultTableCellRenderer#getTableCellRendererComponent(javax.swing.JTable, java.lang.Object, boolean, boolean, int, int)
- */
-@Override
-public Component getTableCellRendererComponent(JTable table, Object value,
-		boolean isSelected, boolean hasFocus, int row, int column) {
-	searchTable = (SearchTable)table;
-	cellInfo = (CellInfo)value;
-	if (cellInfo == null) {
-		cellInfo = stringCellInfo;
-	}
-	if (cellInfo instanceof StringCellInfo) {
-		if (((StringCellInfo)cellInfo).getLnCount()  >= 1) {
-		table.setRowHeight(row, table.getRowHeight() *  (((StringCellInfo)cellInfo).getLnCount() + 1));
-		}
-	}
-	if (isSelected) {
-		if (hasFocus) {
-			//フォーカスあり選択ありのセルを返す
-			if (searchTable.isInitMode()) {
-				if (cellInfo.getBkValue() == null) {
-					selectedFocusInitField.setText(stringCellInfo.toString());
-				} else {
-					selectedFocusInitField.setText(cellInfo.getBkValue().toString());
-				}
-				return selectedFocusInitField;
-			} else {
-				selectedFocusField.setText(cellInfo.toString());
-				return selectedFocusField;
-			}
-		} else {
-			//選択ありのセルを返す
-			if (searchTable.isInitMode()) {
-				if (cellInfo.getBkValue() == null) {
-					selectedInitField.setText(stringCellInfo.toString());
-				} else {
-					selectedInitField.setText(cellInfo.getBkValue().toString());
-				}
-				return selectedInitField;
-			} else {
-				selectedField.setText(cellInfo.toString());
-				return selectedField;
-			}
-		}
-	} else if (hasFocus) {
-		//フォーカスあり状態のセルを返す
-		focusField.setText(cellInfo.toString());
-		return focusField;
-	} else {
-		//通常のセル表示を返す
-		if (cellInfo.isInserted()) {
-			insertField.setText(cellInfo.toString());
-			return insertField;
-		} else if (cellInfo.isUpdated()){
-			if (cellInfo.isModified()) {
-				updateModifyField.setText(cellInfo.toString());
-				return updateModifyField;
-			} else {
-				updateField.setText(cellInfo.toString());
-				return updateField;
-			}
-		} else {
-			normalField.setText(cellInfo.toString());
-			return normalField;
-		}
-	}
-}
 
+	/*
+	 * (非 Javadoc)
+	 * 
+	 * @see
+	 * javax.swing.table.DefaultTableCellRenderer#getTableCellRendererComponent(
+	 * javax.swing.JTable, java.lang.Object, boolean, boolean, int, int)
+	 */
+	@Override
+	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+			int row, int column) {
+		searchTable = (SearchTable) table;
+		cellInfo = (CellInfo) value;
+		if (cellInfo == null) {
+			cellInfo = stringCellInfo;
+		}
+		if (cellInfo instanceof StringCellInfo) {
+			if (((StringCellInfo) cellInfo).getLnCount() >= 1) {
+				table.setRowHeight(row, table.getRowHeight() * (((StringCellInfo) cellInfo).getLnCount() + 1));
+			}
+		}
+		if (isSelected) {
+			if (hasFocus) {
+				// フォーカスあり選択ありのセルを返す
+				if (searchTable.isInitMode()) {
+					if (cellInfo.getBkValue() == null) {
+						selectedFocusInitField.setText(stringCellInfo.toString());
+					} else {
+						selectedFocusInitField.setText(cellInfo.getBkValue().toString());
+					}
+					return selectedFocusInitField;
+				} else {
+					selectedFocusField.setText(cellInfo.toString());
+					return selectedFocusField;
+				}
+			} else {
+				// 選択ありのセルを返す
+				if (searchTable.isInitMode()) {
+					if (cellInfo.getBkValue() == null) {
+						selectedInitField.setText(stringCellInfo.toString());
+					} else {
+						selectedInitField.setText(cellInfo.getBkValue().toString());
+					}
+					return selectedInitField;
+				} else {
+					selectedField.setText(cellInfo.toString());
+					return selectedField;
+				}
+			}
+		} else if (hasFocus) {
+			// フォーカスあり状態のセルを返す
+			focusField.setText(cellInfo.toString());
+			return focusField;
+		} else {
+			// 通常のセル表示を返す
+			if (cellInfo.isInserted()) {
+				insertField.setText(cellInfo.toString());
+				return insertField;
+			} else if (cellInfo.isUpdated()) {
+				if (cellInfo.isModified()) {
+					updateModifyField.setText(cellInfo.toString());
+					return updateModifyField;
+				} else {
+					updateField.setText(cellInfo.toString());
+					return updateField;
+				}
+			} else {
+				normalField.setText(cellInfo.toString());
+				return normalField;
+			}
+		}
+	}
 
 }

@@ -14,13 +14,15 @@ import com.uchicom.csve.window.CsvTagEditorUI;
  */
 public class VersionAction extends UIAbstractAction {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	public void actionPerformed(ActionEvent actionEvent) {
-		CsvTagEditorUI csvTagEditorUI = (CsvTagEditorUI) uiStore
-				.getUI(CsvTagEditorUI.UI_KEY);
-		//基本設定ファイルから取得するようにする
-		JOptionPane.showMessageDialog(csvTagEditorUI.getBasisComponent(),
-				"CSVエディター　バージョン0");
+		CsvTagEditorUI csvTagEditorUI = (CsvTagEditorUI) uiStore.getUI(CsvTagEditorUI.UI_KEY);
+		// 基本設定ファイルから取得するようにする
+		JOptionPane.showMessageDialog(csvTagEditorUI.getBasisComponent(), "CSVエディター　バージョン0");
 
 	}
 }
