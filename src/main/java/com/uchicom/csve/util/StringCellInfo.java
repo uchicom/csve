@@ -1,6 +1,7 @@
 // (c) 2005 uchicom
 package com.uchicom.csve.util;
 
+import java.util.regex.Pattern;
 
 /**
  *
@@ -11,16 +12,16 @@ public class StringCellInfo extends AbstractCellInfo {
 	private int lnCount;
     /** Creates a new instance of CellInfo */
     public StringCellInfo(String value, boolean bNumber) {
-        this.value = value;
+        setValue(value);
         super.bkValue = value;
         this.bNumber = bNumber;
     }
     public StringCellInfo(String value) {
-        this.value = value;
+        setValue(value);
         this.bkValue = value;
     }
     public StringCellInfo(String value, int lnCount) {
-        this.value = value;
+        setValue(value);
         this.bkValue = value;
         this.lnCount = lnCount;
     }
@@ -39,6 +40,16 @@ public class StringCellInfo extends AbstractCellInfo {
 
     public void setValue(Object value) {
         this.value = (String)value;
+        mustEscape = checkExe(this.value);
+        countByEnclosingCharacter = 0;
+        if (mustEscape) {
+        	// 囲むべき文字がある場合は調査する
+        	for (char c : this.value.toCharArray()) {
+        		if (c == '\"') {
+        			countByEnclosingCharacter++;
+        		}
+        	}
+        }
     }
     public Object getValue() {
         return value;
@@ -81,6 +92,76 @@ public class StringCellInfo extends AbstractCellInfo {
     	return value == null || "".equals(value);
     }
 
+    public boolean mustEscape() {
+    	return mustEscape;
+    }
+    int match = ~('\r' | '\n' | '"' | ',');
+    protected boolean checkExe(String value) {
+    	if (value == null) return false;
+    	for (char c : value.toCharArray()) {
+    		if ((c & match) == 0) {
+    			if (c == '\r' || c == '\n' || c == '"' || c == ',') {
+    				return true;
+    			}
+    		}
+    	}
+    	return false;
+    }
+    Pattern pat = Pattern.compile(".*[\\,\\r\\n\"].*");
+    /**
+     * カンマ、改行、ダブルクォートを含む場合はtrue
+     */
+    protected boolean checkEscape(String value) {
+    	if (value == null) return false;
+    	return value.matches(".*[\\,\\r\\n\"].*");
+    }
+    protected boolean checkEscape2(String value) {
+    	if (value == null) return false;
+    	return pat.matcher(value).find();
+    }
+    protected int getCountByEnclosingCharacter() {
+    	return countByEnclosingCharacter;
+    }
+
+    /**
+     * 文字数が割るのはダブルクォートが存在した時だけ。
+     * @return
+     */
+    public String getOutput() {
+    	return mustEscape ? "\"" + value + "\"" : value;
+    }
+
+    /**
+     * 囲み文字やエスケープした結果の長さ。
+     * @return
+     */
+    public int getOutputLength() {
+    	int length = 0;
+    	if (value == null) return 0;
+    	length += value.length();
+    	if (mustEscape) {
+    		length += 2;
+    		length += countByEnclosingCharacter;
+    	}
+    	return length;
+    }
+
+    public void write(StringBuilder builder) {
+    	if (mustEscape) {
+    		builder.append("\"");
+    		if (countByEnclosingCharacter > 0) {
+    			builder.append(value.replaceAll("\"", "\"\""));
+    		} else {
+    			builder.append(value);
+    		}
+    		builder.append("\"");
+    	} else {
+    		builder.append(value);
+    	}
+    }
+
     private boolean bNumber = false;
     private String value = null;
+    private boolean mustEscape;
+    private int countByEnclosingCharacter;
 }

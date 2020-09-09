@@ -19,4 +19,8 @@ public interface CellInfo extends java.lang.Comparable<CellInfo> {
     public void removeStatus(int removeStatus);
     /** 並び替えで使用する */
     public boolean isEmpty();
+    /** 囲み文字が必要かを判定する */
+    public boolean mustEscape();
+    public int getOutputLength();
+    public void write(StringBuilder builder);
 }
