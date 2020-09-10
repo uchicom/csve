@@ -2,6 +2,7 @@ package com.uchicom.csve.util;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class StringCellInfoTest {
@@ -48,6 +49,7 @@ public class StringCellInfoTest {
 		assertEquals(4 + 2, new StringCellInfo("t,st").getOutputLength());
 		assertEquals(4 + 2 + 1, new StringCellInfo("t\"st").getOutputLength());
 	}
+	@Ignore
 	@Test
 	public void test() {
 		StringCellInfo info = new StringCellInfo("test");

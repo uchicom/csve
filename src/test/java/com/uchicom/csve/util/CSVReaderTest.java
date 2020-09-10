@@ -120,4 +120,11 @@ public class CSVReaderTest {
 		}
 	}
 
+	@Test
+	public void escape() {
+		assertEquals("test", new String(CSVReader.escape("test".toCharArray(), '"', 0)));
+		assertEquals("\"", new String(CSVReader.escape("\"\"".toCharArray(), '"', 1)));
+		assertEquals("t\"st", new String(CSVReader.escape("t\"\"st".toCharArray(), '"', 1)));
+		assertEquals("\"\"", new String(CSVReader.escape("\"\"\"\"".toCharArray(), '"', 2)));
+	}
 }

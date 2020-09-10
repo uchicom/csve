@@ -21,13 +21,16 @@ import java.util.List;
  */
 public class CSVReader implements Closeable {
 
+	private CharHelper charHelper = new CharHelper();
 	private BufferedReader bis;
 	private int length;
 	private int index;
+	boolean crFlg;
 	private char[] chars = new char[1024 * 4 * 1024];
 	private List<char[]> charsList = new ArrayList<>();
 	boolean escapeOnFlg = false;
 	boolean escapeOffFlg = false;
+	int escapeCount = 0;
 	char[] lastChars;
 	int lnCount = 0;
 	int maxLnCount = 0;
@@ -68,6 +71,26 @@ public class CSVReader implements Closeable {
 		this(url.openStream(), enc);
 	}
 
+	public class CharHelper {
+		public int length;
+		public int index;
+		public char[] chars = new char[1024 * 4 * 1024];
+		public CharHelper() {
+		}
+		boolean needReload() {
+			return index >= length;
+		}
+	}
+	private CharHelper getChars() throws IOException {
+
+		if (charHelper.needReload()) {
+			charHelper.length = bis.read(chars);
+			charHelper.index = 0;
+		}
+
+		return charHelper;
+	}
+
 	/**
 	 * "は囲み文字化かエスケープ"
 	 * @return
@@ -79,10 +102,6 @@ public class CSVReader implements Closeable {
 		// エスケープしていない場合は、normal();
 		return cells;
 	}
-	public String escaping() {
-		//エスケープ文字か判定、エスケープ文字の場合は、切ったり張ったりして文字を作り直す。
-		return "";
-	}
 	public CellInfo[] getNextCsvLineCellInfo() {
 		CellInfo[] cells = null;
 		// System.out.println("getNextCsvLineCellInfo");
@@ -91,10 +110,18 @@ public class CSVReader implements Closeable {
 			FOR1: if (index < length) {
 				// System.out.println("for");
 				for (int iByte = index; iByte < length; iByte++) {
+//					System.out.println("............." + chars[iByte]);
 					if (escapeOnFlg && !escapeOffFlg) {
 						switch (chars[iByte]) {
-						case '\"':
-							escapeOffFlg = true;
+						case '"':
+//							System.out.println("a");
+							if (length > iByte + 1 && '"' == chars[iByte + 1]) {
+								escapeCount++;
+								iByte++;
+							} else {
+//								System.out.println(",,,,,,,,,,,,,");
+								escapeOffFlg = true;
+							}
 							break;
 						case '\n':
 							lnCount++;
@@ -102,7 +129,7 @@ public class CSVReader implements Closeable {
 						}
 					} else {
 						switch (chars[iByte]) {
-						case '\"':
+						case '"':
 							escapeOnFlg = true;
 							index++;
 							break;
@@ -114,7 +141,12 @@ public class CSVReader implements Closeable {
 									maxLnCount = lnCount;
 								}
 								lnCount = 0;
-								charsList.add(Arrays.copyOfRange(chars, index, iByte - 1));
+								if (escapeCount > 0) {
+									charsList.add(escape(Arrays.copyOfRange(chars, index, iByte - 1), '"', escapeCount));
+									escapeCount = 0;
+								} else {
+									charsList.add(Arrays.copyOfRange(chars, index, iByte - 1));
+								}
 								index = iByte + 1;
 							} else if (!escapeOnFlg) {
 								if (lastChars != null) {
@@ -131,14 +163,25 @@ public class CSVReader implements Closeable {
 								index = iByte + 1;
 							}
 							break;
+						case '\r':
+							crFlg = true;
+							break;
 						case '\n':
+							
+//							System.out.println("ここだよね" + escapeCount);
 							if (escapeOffFlg) {
 								escapeOnFlg = false;
 								escapeOffFlg = false;
 								if (maxLnCount < lnCount) {
 									maxLnCount = lnCount;
 								}
-								charsList.add(Arrays.copyOfRange(chars, index, iByte - 1));
+								if (escapeCount > 0) {
+									charsList.add(escape(Arrays.copyOfRange(chars, index, iByte - (crFlg ? 2 : 1)), '"', escapeCount));
+									escapeCount = 0;
+								} else {
+									charsList.add(Arrays.copyOfRange(chars, index, iByte - (crFlg ? 2 : 1)));
+								}
+								crFlg = false;
 								index = iByte + 1;
 							} else if (!escapeOnFlg) {
 								charsList.add(Arrays.copyOfRange(chars, index, iByte));
@@ -172,21 +215,33 @@ public class CSVReader implements Closeable {
 					// System.out.println(new String(chars, 0, length));
 					for (int iByte = index; iByte < length; iByte++) {
 						if (escapeOnFlg && !escapeOffFlg) {
+//							System.out.println("if");
 							switch (chars[iByte]) {
-							case '\"':
-								escapeOffFlg = true;
+							case '"':
+//								System.out.println("b");
+								if (length > iByte + 1 && '"' == chars[iByte + 1]) {
+									iByte++;
+									escapeCount++;
+//									System.out.println("c");
+								} else {
+//									System.out.println("d");
+									escapeOffFlg = true;
+								}
 								break;
 							case '\n':
 								lnCount++;
 								break;
 							}
 						} else {
+//							System.out.println("else");
 							switch (chars[iByte]) {
-							case '\"':
+							case '"':
+//								System.out.println("\"");
 								escapeOnFlg = true;
 								index++;
 								break;
 							case ',':
+//								System.out.println(",");
 								if (escapeOffFlg) {
 									escapeOnFlg = false;
 									escapeOffFlg = false;
@@ -194,8 +249,15 @@ public class CSVReader implements Closeable {
 										maxLnCount = lnCount;
 									}
 									lnCount = 0;
-									charsList.add(Arrays.copyOfRange(chars, index, iByte - 1));
+									if (escapeCount > 0) {
+										charsList.add(escape(Arrays.copyOfRange(chars, index, iByte - 1), '"', escapeCount));
+										escapeCount = 0;
+									} else {
+										charsList.add(Arrays.copyOfRange(chars, index, iByte - 1));
+									}
+//									System.out.println("list:" + new String(charsList.get(charsList.size() - 1)));
 									index = iByte + 1;
+									escapeCount = 0;
 								} else if (!escapeOnFlg) {
 									if (lastChars != null) {
 
@@ -212,14 +274,24 @@ public class CSVReader implements Closeable {
 									index = iByte + 1;
 								}
 								break;
+							case '\r':
+								crFlg = true;
+								break;
 							case '\n':
+//								System.out.println("\\n");
 								if (escapeOffFlg) {
 									escapeOnFlg = false;
 									escapeOffFlg = false;
 									if (maxLnCount < lnCount) {
 										maxLnCount = lnCount;
 									}
-									charsList.add(Arrays.copyOfRange(chars, index, iByte - 1));
+									if (escapeCount > 0) {
+										charsList.add(escape(Arrays.copyOfRange(chars, index, iByte - (crFlg ? 2 : 1)), '"', escapeCount));
+										escapeCount = 0;
+									} else {
+										charsList.add(Arrays.copyOfRange(chars, index, iByte - (crFlg ? 2 : 1)));
+									}
+									crFlg = false;
 									index = iByte + 1;
 								} else if (!escapeOnFlg) {
 									charsList.add(Arrays.copyOfRange(chars, index, iByte));
@@ -228,9 +300,12 @@ public class CSVReader implements Closeable {
 								break READ;
 							}
 						}
+//						System.out.println("z");
 					}
+//					 System.out.println("index:" + index);
+//					 System.out.println("length:" + length);
 					if (index < length) {
-						// System.out.println("indx < length");
+//						 System.out.println("indx < length");
 						if (escapeOffFlg) {
 							escapeOnFlg = false;
 							escapeOffFlg = false;
@@ -259,12 +334,40 @@ public class CSVReader implements Closeable {
 				charsList.clear();
 			}
 		} catch (FileNotFoundException exception) {
-
 		} catch (IOException exception) {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return cells;
+	}
+
+	/**
+	 * エスケープ文字を除去する.
+	 * @param chars
+	 * @param escape
+	 * @param escapeCount
+	 * @return
+	 */
+	public static char[] escape(char[] chars, char escape, int escapeCount) {
+		
+		char[] escaped = new char[chars.length - escapeCount];
+		int escapeIndex = 0;
+		int startIndex = 0;
+		for (int i = 0; i < chars.length; i++) {
+			if (escape == chars[i]) {
+				for (int j = startIndex; j <= i; j++) {
+					escaped[escapeIndex++] = chars[j];
+				}
+				startIndex = i + 2;
+				i++;
+			}
+		}
+		if (escapeIndex < escaped.length) {
+			for (int j = startIndex; j < chars.length; j++) {
+				escaped[escapeIndex++] = chars[j];
+			}
+		}
+		return escaped;
 	}
 
 	/**

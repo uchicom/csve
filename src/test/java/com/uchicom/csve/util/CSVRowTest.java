@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-public class CsvRowTest {
+public class CSVRowTest {
 
 	@Test
 	public void getOutputLength() {
