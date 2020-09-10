@@ -68,6 +68,21 @@ public class CSVReader implements Closeable {
 		this(url.openStream(), enc);
 	}
 
+	/**
+	 * "は囲み文字化かエスケープ"
+	 * @return
+	 */
+	public CellInfo[] getNextLine() {
+		CellInfo[] cells = null;
+		
+		//エスケープしたら、escaping();
+		// エスケープしていない場合は、normal();
+		return cells;
+	}
+	public String escaping() {
+		//エスケープ文字か判定、エスケープ文字の場合は、切ったり張ったりして文字を作り直す。
+		return "";
+	}
 	public CellInfo[] getNextCsvLineCellInfo() {
 		CellInfo[] cells = null;
 		// System.out.println("getNextCsvLineCellInfo");
