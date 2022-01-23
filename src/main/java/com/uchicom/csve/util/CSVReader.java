@@ -20,8 +20,8 @@ public class CSVReader implements Closeable {
 
   private CharHelper charHelper = new CharHelper();
   private BufferedReader bis;
-  private int length;
-  private int index;
+  private int readFileLength;
+  private int fileIndex;
   boolean crFlg;
   private char[] chars = new char[1024 * 4 * 1024];
   private List<char[]> charsList = new ArrayList<>();
@@ -33,6 +33,8 @@ public class CSVReader implements Closeable {
   int maxLnCount = 0;
   String enc;
 
+  StringBuffer columnBuff = new StringBuffer(128);
+  private static final int IS_EOF = -1;
   /**
    * Creates a new instance of CVSReader
    *
@@ -108,15 +110,15 @@ public class CSVReader implements Closeable {
     //
     try {
       FOR1:
-      if (index < length) {
+      if (fileIndex < readFileLength) {
         // System.out.println("for");
-        for (int iByte = index; iByte < length; iByte++) {
+        for (int iByte = fileIndex; iByte < readFileLength; iByte++) {
           //					System.out.println("............." + chars[iByte]);
           if (escapeOnFlg && !escapeOffFlg) {
             switch (chars[iByte]) {
               case '"':
                 //							System.out.println("a");
-                if (length > iByte + 1 && '"' == chars[iByte + 1]) {
+                if (readFileLength > iByte + 1 && '"' == chars[iByte + 1]) {
                   escapeCount++;
                   iByte++;
                 } else {
@@ -132,7 +134,7 @@ public class CSVReader implements Closeable {
             switch (chars[iByte]) {
               case '"':
                 escapeOnFlg = true;
-                index++;
+                fileIndex++;
                 break;
               case ',':
                 if (escapeOffFlg) {
@@ -144,25 +146,25 @@ public class CSVReader implements Closeable {
                   lnCount = 0;
                   if (escapeCount > 0) {
                     charsList.add(
-                        escape(Arrays.copyOfRange(chars, index, iByte - 1), '"', escapeCount));
+                        escape(Arrays.copyOfRange(chars, fileIndex, iByte - 1), '"', escapeCount));
                     escapeCount = 0;
                   } else {
-                    charsList.add(Arrays.copyOfRange(chars, index, iByte - 1));
+                    charsList.add(Arrays.copyOfRange(chars, fileIndex, iByte - 1));
                   }
-                  index = iByte + 1;
+                  fileIndex = iByte + 1;
                 } else if (!escapeOnFlg) {
                   if (lastChars != null) {
-                    StringBuffer strBuff = new StringBuffer(lastChars.length + iByte - index);
+                    StringBuffer strBuff = new StringBuffer(lastChars.length + iByte - fileIndex);
                     strBuff.append(lastChars);
                     if (iByte != 0) {
-                      strBuff.append(chars, index, iByte);
+                      strBuff.append(chars, fileIndex, iByte);
                     }
                     charsList.add(strBuff.toString().toCharArray());
                     lastChars = null;
                   } else {
-                    charsList.add(Arrays.copyOfRange(chars, index, iByte));
+                    charsList.add(Arrays.copyOfRange(chars, fileIndex, iByte));
                   }
-                  index = iByte + 1;
+                  fileIndex = iByte + 1;
                 }
                 break;
               case '\r':
@@ -180,18 +182,18 @@ public class CSVReader implements Closeable {
                   if (escapeCount > 0) {
                     charsList.add(
                         escape(
-                            Arrays.copyOfRange(chars, index, iByte - (crFlg ? 2 : 1)),
+                            Arrays.copyOfRange(chars, fileIndex, iByte - (crFlg ? 2 : 1)),
                             '"',
                             escapeCount));
                     escapeCount = 0;
                   } else {
-                    charsList.add(Arrays.copyOfRange(chars, index, iByte - (crFlg ? 2 : 1)));
+                    charsList.add(Arrays.copyOfRange(chars, fileIndex, iByte - (crFlg ? 2 : 1)));
                   }
                   crFlg = false;
-                  index = iByte + 1;
+                  fileIndex = iByte + 1;
                 } else if (!escapeOnFlg) {
-                  charsList.add(Arrays.copyOfRange(chars, index, iByte));
-                  index = iByte + 1;
+                  charsList.add(Arrays.copyOfRange(chars, fileIndex, iByte));
+                  fileIndex = iByte + 1;
                 } else {
                   lnCount++;
                 }
@@ -199,11 +201,11 @@ public class CSVReader implements Closeable {
             }
           }
         }
-        if (index < length) {
+        if (fileIndex < readFileLength) {
           // System.out.println("a");
-          lastChars = Arrays.copyOfRange(chars, index, length);
-          index = 0;
-          length = 0;
+          lastChars = Arrays.copyOfRange(chars, fileIndex, readFileLength);
+          fileIndex = 0;
+          readFileLength = 0;
           if (maxLnCount < lnCount) {
             maxLnCount = lnCount;
           }
@@ -211,8 +213,8 @@ public class CSVReader implements Closeable {
       } else {
         // System.out.println("while");
         READ:
-        while ((length = bis.read(chars)) > 0) {
-          index = 0;
+        while ((readFileLength = bis.read(chars)) > 0) {
+          fileIndex = 0;
           // System.out.println("index:" + index + " length:" +
           // length);
           if (lastChars != null) {
@@ -220,13 +222,13 @@ public class CSVReader implements Closeable {
             // lastChars));
           }
           // System.out.println(new String(chars, 0, length));
-          for (int iByte = index; iByte < length; iByte++) {
+          for (int iByte = fileIndex; iByte < readFileLength; iByte++) {
             if (escapeOnFlg && !escapeOffFlg) {
               //							System.out.println("if");
               switch (chars[iByte]) {
                 case '"':
                   //								System.out.println("b");
-                  if (length > iByte + 1 && '"' == chars[iByte + 1]) {
+                  if (readFileLength > iByte + 1 && '"' == chars[iByte + 1]) {
                     iByte++;
                     escapeCount++;
                     //									System.out.println("c");
@@ -245,7 +247,7 @@ public class CSVReader implements Closeable {
                 case '"':
                   //								System.out.println("\"");
                   escapeOnFlg = true;
-                  index++;
+                  fileIndex++;
                   break;
                 case ',':
                   //								System.out.println(",");
@@ -258,29 +260,30 @@ public class CSVReader implements Closeable {
                     lnCount = 0;
                     if (escapeCount > 0) {
                       charsList.add(
-                          escape(Arrays.copyOfRange(chars, index, iByte - 1), '"', escapeCount));
+                          escape(
+                              Arrays.copyOfRange(chars, fileIndex, iByte - 1), '"', escapeCount));
                       escapeCount = 0;
                     } else {
-                      charsList.add(Arrays.copyOfRange(chars, index, iByte - 1));
+                      charsList.add(Arrays.copyOfRange(chars, fileIndex, iByte - 1));
                     }
                     //									System.out.println("list:" + new
                     // String(charsList.get(charsList.size() - 1)));
-                    index = iByte + 1;
+                    fileIndex = iByte + 1;
                     escapeCount = 0;
                   } else if (!escapeOnFlg) {
                     if (lastChars != null) {
 
-                      StringBuffer strBuff = new StringBuffer(lastChars.length + iByte - index);
+                      StringBuffer strBuff = new StringBuffer(lastChars.length + iByte - fileIndex);
                       strBuff.append(lastChars);
                       if (iByte != 0) {
-                        strBuff.append(chars, index, iByte);
+                        strBuff.append(chars, fileIndex, iByte);
                       }
                       charsList.add(strBuff.toString().toCharArray());
                       lastChars = null;
                     } else {
-                      charsList.add(Arrays.copyOfRange(chars, index, iByte));
+                      charsList.add(Arrays.copyOfRange(chars, fileIndex, iByte));
                     }
-                    index = iByte + 1;
+                    fileIndex = iByte + 1;
                   }
                   break;
                 case '\r':
@@ -297,18 +300,18 @@ public class CSVReader implements Closeable {
                     if (escapeCount > 0) {
                       charsList.add(
                           escape(
-                              Arrays.copyOfRange(chars, index, iByte - (crFlg ? 2 : 1)),
+                              Arrays.copyOfRange(chars, fileIndex, iByte - (crFlg ? 2 : 1)),
                               '"',
                               escapeCount));
                       escapeCount = 0;
                     } else {
-                      charsList.add(Arrays.copyOfRange(chars, index, iByte - (crFlg ? 2 : 1)));
+                      charsList.add(Arrays.copyOfRange(chars, fileIndex, iByte - (crFlg ? 2 : 1)));
                     }
                     crFlg = false;
-                    index = iByte + 1;
+                    fileIndex = iByte + 1;
                   } else if (!escapeOnFlg) {
-                    charsList.add(Arrays.copyOfRange(chars, index, iByte));
-                    index = iByte + 1;
+                    charsList.add(Arrays.copyOfRange(chars, fileIndex, iByte));
+                    fileIndex = iByte + 1;
                   }
                   break READ;
               }
@@ -317,7 +320,7 @@ public class CSVReader implements Closeable {
           }
           //					 System.out.println("index:" + index);
           //					 System.out.println("length:" + length);
-          if (index < length) {
+          if (fileIndex < readFileLength) {
             //						 System.out.println("indx < length");
             if (escapeOffFlg) {
               escapeOnFlg = false;
@@ -325,14 +328,14 @@ public class CSVReader implements Closeable {
               if (maxLnCount < lnCount) {
                 maxLnCount = lnCount;
               }
-              lastChars = Arrays.copyOfRange(chars, index, length - 1);
+              lastChars = Arrays.copyOfRange(chars, fileIndex, readFileLength - 1);
             } else {
-              lastChars = Arrays.copyOfRange(chars, index, length);
+              lastChars = Arrays.copyOfRange(chars, fileIndex, readFileLength);
             }
           }
         }
       }
-      if (length <= 0 && lastChars != null) {
+      if (readFileLength <= 0 && lastChars != null) {
         // ファイルの最後の場合
         charsList.add(lastChars);
         lastChars = null;
@@ -385,118 +388,112 @@ public class CSVReader implements Closeable {
   }
 
   /**
-   * 高速化のためにエスケープする列を固定したい
+   * 高速化のためにエスケープする列を固定したい.
    *
-   * @param maxArray
-   * @param force
-   * @return
-   * @throws IOException
+   * @param columnSize カラムサイズ
+   * @param isForceSizeFix サイズ固定強制
+   * @return 1行分の文字列配列
+   * @throws IOException 入出力エラー発生時
    */
-  public String[] getNextCsvLine(int maxArray, boolean force) throws IOException {
+  public String[] getNextCsvLine(int columnSize, boolean isForceSizeFix) throws IOException {
 
-    int start = index;
-    int l = 0;
-    int arraySize = 0; // 返却するサイズ
-    String[] strings = new String[maxArray];
-
-    boolean escape = false;
-    // 3パターン 足りない、ぴったり、多い
-    StringBuffer strBuff = new StringBuffer();
+    int charStartIndex = fileIndex; // 次の行のカラムinexを現在のfileIndexから取得
+    int charCount = 0; // 文字列抽出時の文字数
+    int columnIndex = 0; // 列Index
+    String[] columns = new String[columnSize]; // 返却する文字列配列
+    boolean isEscape = false; // エスケープ中か否か
     while (true) {
-      //			System.out.println(index + ":" + length);
-      // 取得したデータが終わるまで
-      if (index >= length) {
-        //				System.out.println("a");
-        if (start < length) {
-          strBuff.append(new String(chars, start, l));
+      // CSVレコードを取得するか、ファイルが終わるまで繰り返す、繰り返し単位は1文字
+      if (fileIndex >= readFileLength) { // 次のバッファを読み込みたいとき
+        if (charStartIndex < readFileLength) { // 取得中のデータがある場合はカラムバッファに格納
+          columnBuff.append(new String(chars, charStartIndex, charCount));
         }
-        length = bis.read(chars);
-        if (length <= 0) {
-          //					System.out.println("b");
+        // 読み込み
+        int readLength = bis.read(chars);
+        // 読み込みできない場合はループを抜ける
+        if (readLength == IS_EOF) {
           break;
         }
-        start = 0;
-        index = 0;
-        l = 0;
+        readFileLength += readLength;
       }
-      //			System.out.println("b");
-      if (escape) {
+      if (isEscape) {
         // lengthチェックが必要
-        if (chars[index] == '\"') {
-          escape = false;
-          index++;
-
+        if (chars[fileIndex] == '\"') {
+          isEscape = false;
+          fileIndex++;
           continue;
         }
-      } else if (chars[index] == '\"') {
-        if (start >= index) {
-          start = index + 1;
-          escape = true;
+      } else if (chars[fileIndex] == '\"') {
+        if (charStartIndex >= fileIndex) {
+          charStartIndex = fileIndex + 1;
+          isEscape = true;
         } else {
-          l++;
+          charCount++;
         }
-        index++;
+        fileIndex++;
         continue;
-      } else if (chars[index] == ',' || chars[index] == '\n') {
-        //				System.out.println("d");
-        if (arraySize >= maxArray) {
-          if (force) {
+      } else if (chars[fileIndex] == ',' || chars[fileIndex] == '\n') {
+        if (columnIndex >= columnSize) {
+          if (isForceSizeFix) {
             // 配列作り直し
-            strings = Arrays.copyOf(strings, strings.length + 1);
+            columns = Arrays.copyOf(columns, columns.length + 1);
           } else {
             // エラー
             throw new RuntimeException("パース失敗");
           }
         }
-        if (strBuff.length() > 0) {
-          strBuff.append(new String(chars, start, l));
-          strings[arraySize] = strBuff.toString();
-          //					System.out.println(strings[arraySize]);
-          strBuff.setLength(0);
+        if (columnBuff.length() > 0) {
+          if (fileIndex > 0 && chars[fileIndex - 1] == '\r') {
+            columnBuff.append(new String(chars, charStartIndex, charCount - 1));
+          } else {
+            columnBuff.append(new String(chars, charStartIndex, charCount));
+          }
+          columns[columnIndex] = columnBuff.toString();
+          columnBuff.setLength(0);
         } else {
-          strings[arraySize] = new String(chars, start, l);
-          //					System.out.println(arraySize + ":" + strings[arraySize]);
+          if (fileIndex > 0 && chars[fileIndex - 1] == '\r') {
+            columns[columnIndex] = new String(chars, charStartIndex, charCount - 1);
+          } else {
+            columns[columnIndex] = new String(chars, charStartIndex, charCount);
+          }
         }
-        arraySize++;
-        // 初期化
-        start = index + 1;
-        l = 0;
-        if (chars[index] == '\n') {
-          index++;
+        if (chars[fileIndex] == '\n') {
+          fileIndex++;
           // ここでデータ終了
-          return strings;
+          return columns;
         }
-        index++;
+        fileIndex++;
+        // 初期化
+        columnIndex++;
+        charStartIndex = fileIndex;
+        charCount = 0;
         continue;
       }
-      index++;
-      l++;
-      //			System.out.println("c");
+      fileIndex++;
+      charCount++;
     }
-    // データの最後に来た場合は変換してないデータがある
 
-    if (arraySize >= maxArray) {
-      if (force) {
+    // ファイルの最後に来た場合
+    if (columnIndex >= columnSize) {
+      if (isForceSizeFix) {
         // 配列作り直し
-        strings = Arrays.copyOf(strings, strings.length + 1);
+        columns = Arrays.copyOf(columns, columns.length + 1);
       } else {
         // エラー
-        throw new RuntimeException("パース失敗");
+        throw new RuntimeException("fail parse");
       }
     }
 
-    if (strBuff.length() > 0) {
-      strings[arraySize] = strBuff.toString();
-      //			System.out.println(arraySize + ":" + strings[arraySize]);
-      strBuff.setLength(0);
+    if (columnBuff.length() > 0) {
+      columns[columnIndex] = columnBuff.toString();
+      columnBuff.setLength(0);
     } else {
-      strings[arraySize] = new String(chars, start, l);
+      columns[columnIndex] = new String(chars, charStartIndex, charCount);
     }
-    if (arraySize == 0) {
+    if (columnIndex == 0) {
       return null;
     }
-    //		System.out.println("e");
-    return strings;
+    return columns;
   }
 
   @Override
