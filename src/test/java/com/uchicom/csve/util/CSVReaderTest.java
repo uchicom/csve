@@ -2,7 +2,7 @@
 package com.uchicom.csve.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
@@ -26,8 +26,7 @@ public class CSVReaderTest {
       assertThat(result[3]).isEqualTo("4");
       assertThat(reader.getNextCsvLine(4, true)).isNull();
     } catch (Exception e) {
-      e.printStackTrace();
-      fail();
+      fail(e);
     }
   }
 
@@ -46,8 +45,7 @@ public class CSVReaderTest {
       assertThat(reader.getNextCsvLine(4, true)).isNull();
       ;
     } catch (Exception e) {
-      e.printStackTrace();
-      fail();
+      fail(e);
     }
   }
 
@@ -71,8 +69,7 @@ public class CSVReaderTest {
       assertThat(result[3]).isEqualTo("4");
       assertThat(reader.getNextCsvLine(4, true)).isNull();
     } catch (Exception e) {
-      e.printStackTrace();
-      fail();
+      fail(e);
     }
   }
 
@@ -90,8 +87,7 @@ public class CSVReaderTest {
       assertThat(result[3]).isEqualTo("");
       assertThat(reader.getNextCsvLine(4, true)).isNull();
     } catch (Exception e) {
-      e.printStackTrace();
-      fail();
+      fail(e);
     }
   }
 
@@ -109,8 +105,7 @@ public class CSVReaderTest {
       assertThat(result[3]).isEqualTo("a\"\\\\\"b");
       assertThat(reader.getNextCsvLine(4, true)).isNull();
     } catch (Exception e) {
-      e.printStackTrace();
-      fail();
+      fail(e);
     }
   }
 

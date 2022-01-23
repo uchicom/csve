@@ -3,7 +3,6 @@ package com.uchicom.csve.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 
 public class StringCellInfoTest {
@@ -54,7 +53,6 @@ public class StringCellInfoTest {
     assertThat(new StringCellInfo("t\"st").getOutputLength()).isEqualTo(4 + 2 + 1);
   }
 
-  @Ignore
   @Test
   public void test() {
     StringCellInfo info = new StringCellInfo("test");
