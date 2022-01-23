@@ -110,6 +110,43 @@ public class CSVReaderTest {
   }
 
   @Test
+  public void getNextCsvLine6() {
+    String string = "\"a\",\",\",\"\n\",a\"\\\\\"b\n";
+    ByteArrayInputStream bais = new ByteArrayInputStream(string.getBytes());
+    try (CSVReader reader = new CSVReader(bais, StandardCharsets.UTF_8); ) {
+
+      String[] result = reader.getNextCsvLine(4, true);
+      assertThat(result).hasSize(4);
+      assertThat(result[0]).isEqualTo("a");
+      assertThat(result[1]).isEqualTo(",");
+      assertThat(result[2]).isEqualTo("\n");
+      assertThat(result[3]).isEqualTo("a\"\\\\\"b");
+      assertThat(reader.getNextCsvLine(4, true)).isNull();
+    } catch (Exception e) {
+      fail(e);
+    }
+  }
+
+  @Test
+  public void getNextCsvLine7() {
+    System.out.println("getNextCsvLine7");
+    String string = "\"a\",\",\",\"\r\n\",a\"\\\\\"b\r\n";
+    ByteArrayInputStream bais = new ByteArrayInputStream(string.getBytes());
+    try (CSVReader reader = new CSVReader(bais, StandardCharsets.UTF_8); ) {
+
+      String[] result = reader.getNextCsvLine(4, true);
+      assertThat(result).hasSize(4);
+      assertThat(result[0]).isEqualTo("a");
+      assertThat(result[1]).isEqualTo(",");
+      assertThat(result[2]).isEqualTo("\r\n");
+      assertThat(result[3]).isEqualTo("a\"\\\\\"b");
+      assertThat(reader.getNextCsvLine(4, true)).isNull();
+    } catch (Exception e) {
+      fail(e);
+    }
+  }
+
+  @Test
   public void escape() {
     assertThat(new String(CSVReader.escape("test".toCharArray(), '"', 0))).isEqualTo("test");
     assertThat(new String(CSVReader.escape("\"\"".toCharArray(), '"', 1))).isEqualTo("\"");
