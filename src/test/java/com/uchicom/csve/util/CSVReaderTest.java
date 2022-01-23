@@ -1,130 +1,156 @@
-// (c) 2017 uchicom
+// (C) 2017 uchicom
 package com.uchicom.csve.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Test;
-
-/**
- * @author uchicom: Shigeki Uchiyama
- *
- */
+/** @author uchicom: Shigeki Uchiyama */
 public class CSVReaderTest {
 
-	/**
-	 * 
-	 */
-	@Test
-	public void getNextCsvLine1() {
-		String string = "1,2,3,4";
-		ByteArrayInputStream bais = new ByteArrayInputStream(string.getBytes());
-		try (CSVReader reader = new CSVReader(bais, StandardCharsets.UTF_8);) {
+  /** */
+  @Test
+  public void getNextCsvLine1() {
+    String string = "1,2,3,4";
+    ByteArrayInputStream bais = new ByteArrayInputStream(string.getBytes());
+    try (CSVReader reader = new CSVReader(bais, StandardCharsets.UTF_8); ) {
 
-			String[] result = reader.getNextCsvLine(4, true);
-			assertEquals(4, result.length);
-			assertEquals("1", result[0]);
-			assertEquals("2", result[1]);
-			assertEquals("3", result[2]);
-			assertEquals("4", result[3]);
-			assertNull(reader.getNextCsvLine(4, true));
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
-	}
+      String[] result = reader.getNextCsvLine(4, true);
+      assertThat(result).hasSize(4);
+      assertThat(result[0]).isEqualTo("1");
+      assertThat(result[1]).isEqualTo("2");
+      assertThat(result[2]).isEqualTo("3");
+      assertThat(result[3]).isEqualTo("4");
+      assertThat(reader.getNextCsvLine(4, true)).isNull();
+    } catch (Exception e) {
+      fail(e);
+    }
+  }
 
-	@Test
-	public void getNextCsvLine2() {
-		String string = "あ,い,う,え";
-		ByteArrayInputStream bais = new ByteArrayInputStream(string.getBytes());
-		try (CSVReader reader = new CSVReader(bais, StandardCharsets.UTF_8);) {
+  @Test
+  public void getNextCsvLine2() {
+    String string = "あ,い,う,え";
+    ByteArrayInputStream bais = new ByteArrayInputStream(string.getBytes());
+    try (CSVReader reader = new CSVReader(bais, StandardCharsets.UTF_8); ) {
 
-			String[] result = reader.getNextCsvLine(4, true);
-			assertEquals(4, result.length);
-			assertEquals("あ", result[0]);
-			assertEquals("い", result[1]);
-			assertEquals("う", result[2]);
-			assertEquals("え", result[3]);
-			assertNull(reader.getNextCsvLine(4, true));
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
-	}
+      String[] result = reader.getNextCsvLine(4, true);
+      assertThat(result).hasSize(4);
+      assertThat(result[0]).isEqualTo("あ");
+      assertThat(result[1]).isEqualTo("い");
+      assertThat(result[2]).isEqualTo("う");
+      assertThat(result[3]).isEqualTo("え");
+      assertThat(reader.getNextCsvLine(4, true)).isNull();
+      ;
+    } catch (Exception e) {
+      fail(e);
+    }
+  }
 
-	@Test
-	public void getNextCsvLine3() {
-		String string = "あ,い,う,え\n1,2,3,4";
-		ByteArrayInputStream bais = new ByteArrayInputStream(string.getBytes());
-		try (CSVReader reader = new CSVReader(bais, StandardCharsets.UTF_8);) {
+  @Test
+  public void getNextCsvLine3() {
+    String string = "あ,い,う,え\n1,2,3,4";
+    ByteArrayInputStream bais = new ByteArrayInputStream(string.getBytes());
+    try (CSVReader reader = new CSVReader(bais, StandardCharsets.UTF_8); ) {
 
-			String[] result = reader.getNextCsvLine(4, true);
-			assertEquals(4, result.length);
-			assertEquals("あ", result[0]);
-			assertEquals("い", result[1]);
-			assertEquals("う", result[2]);
-			assertEquals("え", result[3]);
-			result = reader.getNextCsvLine(4, true);
-			assertEquals(4, result.length);
-			assertEquals("1", result[0]);
-			assertEquals("2", result[1]);
-			assertEquals("3", result[2]);
-			assertEquals("4", result[3]);
-			assertNull(reader.getNextCsvLine(4, true));
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
-	}
+      String[] result = reader.getNextCsvLine(4, true);
+      assertThat(result).hasSize(4);
+      assertThat(result[0]).isEqualTo("あ");
+      assertThat(result[1]).isEqualTo("い");
+      assertThat(result[2]).isEqualTo("う");
+      assertThat(result[3]).isEqualTo("え");
+      result = reader.getNextCsvLine(4, true);
+      assertThat(result).hasSize(4);
+      assertThat(result[0]).isEqualTo("1");
+      assertThat(result[1]).isEqualTo("2");
+      assertThat(result[2]).isEqualTo("3");
+      assertThat(result[3]).isEqualTo("4");
+      assertThat(reader.getNextCsvLine(4, true)).isNull();
+    } catch (Exception e) {
+      fail(e);
+    }
+  }
 
-	@Test
-	public void getNextCsvLine4() {
-		String string = ",,,";
-		ByteArrayInputStream bais = new ByteArrayInputStream(string.getBytes());
-		try (CSVReader reader = new CSVReader(bais, StandardCharsets.UTF_8);) {
+  @Test
+  public void getNextCsvLine4() {
+    String string = ",,,";
+    ByteArrayInputStream bais = new ByteArrayInputStream(string.getBytes());
+    try (CSVReader reader = new CSVReader(bais, StandardCharsets.UTF_8); ) {
 
-			String[] result = reader.getNextCsvLine(4, true);
-			assertEquals(4, result.length);
-			assertEquals("", result[0]);
-			assertEquals("", result[1]);
-			assertEquals("", result[2]);
-			assertEquals("", result[3]);
-			assertNull(reader.getNextCsvLine(4, true));
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
-	}
+      String[] result = reader.getNextCsvLine(4, true);
+      assertThat(result).hasSize(4);
+      assertThat(result[0]).isEqualTo("");
+      assertThat(result[1]).isEqualTo("");
+      assertThat(result[2]).isEqualTo("");
+      assertThat(result[3]).isEqualTo("");
+      assertThat(reader.getNextCsvLine(4, true)).isNull();
+    } catch (Exception e) {
+      fail(e);
+    }
+  }
 
-	@Test
-	public void getNextCsvLine5() {
-		String string = "\"a\",\",\",\"\n\",a\"\\\\\"b";
-		ByteArrayInputStream bais = new ByteArrayInputStream(string.getBytes());
-		try (CSVReader reader = new CSVReader(bais, StandardCharsets.UTF_8);) {
+  @Test
+  public void getNextCsvLine5() {
+    String string = "\"a\",\",\",\"\n\",a\"\\\\\"b";
+    ByteArrayInputStream bais = new ByteArrayInputStream(string.getBytes());
+    try (CSVReader reader = new CSVReader(bais, StandardCharsets.UTF_8); ) {
 
-			String[] result = reader.getNextCsvLine(4, true);
-			assertEquals(4, result.length);
-			assertEquals("a", result[0]);
-			assertEquals(",", result[1]);
-			assertEquals("\n", result[2]);
-			assertEquals("a\"\\\\\"b", result[3]);
-			assertNull(reader.getNextCsvLine(4, true));
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
-	}
+      String[] result = reader.getNextCsvLine(4, true);
+      assertThat(result).hasSize(4);
+      assertThat(result[0]).isEqualTo("a");
+      assertThat(result[1]).isEqualTo(",");
+      assertThat(result[2]).isEqualTo("\n");
+      assertThat(result[3]).isEqualTo("a\"\\\\\"b");
+      assertThat(reader.getNextCsvLine(4, true)).isNull();
+    } catch (Exception e) {
+      fail(e);
+    }
+  }
 
-	@Test
-	public void escape() {
-		assertEquals("test", new String(CSVReader.escape("test".toCharArray(), '"', 0)));
-		assertEquals("\"", new String(CSVReader.escape("\"\"".toCharArray(), '"', 1)));
-		assertEquals("t\"st", new String(CSVReader.escape("t\"\"st".toCharArray(), '"', 1)));
-		assertEquals("\"\"", new String(CSVReader.escape("\"\"\"\"".toCharArray(), '"', 2)));
-	}
+  @Test
+  public void getNextCsvLine6() {
+    String string = "\"a\",\",\",\"\n\",a\"\\\\\"b\n";
+    ByteArrayInputStream bais = new ByteArrayInputStream(string.getBytes());
+    try (CSVReader reader = new CSVReader(bais, StandardCharsets.UTF_8); ) {
+
+      String[] result = reader.getNextCsvLine(4, true);
+      assertThat(result).hasSize(4);
+      assertThat(result[0]).isEqualTo("a");
+      assertThat(result[1]).isEqualTo(",");
+      assertThat(result[2]).isEqualTo("\n");
+      assertThat(result[3]).isEqualTo("a\"\\\\\"b");
+      assertThat(reader.getNextCsvLine(4, true)).isNull();
+    } catch (Exception e) {
+      fail(e);
+    }
+  }
+
+  @Test
+  public void getNextCsvLine7() {
+    System.out.println("getNextCsvLine7");
+    String string = "\"a\",\",\",\"\r\n\",a\"\\\\\"b\r\n";
+    ByteArrayInputStream bais = new ByteArrayInputStream(string.getBytes());
+    try (CSVReader reader = new CSVReader(bais, StandardCharsets.UTF_8); ) {
+
+      String[] result = reader.getNextCsvLine(4, true);
+      assertThat(result).hasSize(4);
+      assertThat(result[0]).isEqualTo("a");
+      assertThat(result[1]).isEqualTo(",");
+      assertThat(result[2]).isEqualTo("\r\n");
+      assertThat(result[3]).isEqualTo("a\"\\\\\"b");
+      assertThat(reader.getNextCsvLine(4, true)).isNull();
+    } catch (Exception e) {
+      fail(e);
+    }
+  }
+
+  @Test
+  public void escape() {
+    assertThat(new String(CSVReader.escape("test".toCharArray(), '"', 0))).isEqualTo("test");
+    assertThat(new String(CSVReader.escape("\"\"".toCharArray(), '"', 1))).isEqualTo("\"");
+    assertThat(new String(CSVReader.escape("t\"\"st".toCharArray(), '"', 1))).isEqualTo("t\"st");
+    assertThat(new String(CSVReader.escape("\"\"\"\"".toCharArray(), '"', 2))).isEqualTo("\"\"");
+  }
 }
