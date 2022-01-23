@@ -1,12 +1,12 @@
 // (C) 2022 uchicom
 package com.uchicom.csve.util;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class CSVHelperTest {
 
@@ -43,22 +43,23 @@ public class CSVHelperTest {
             }));
     CSVHelper helper = new CSVHelper();
     helper.write(rowList, new File("test.csv"));
-    //		assertEquals(4 + 3 + 4 + 3 + 3 + 4 + 6 + 7 + 6 + 6 + 8, row.getOutputLength());
+    //		assertThat(4 + 3 + 4 + 3 + 3 + 4 + 6 + 7 + 6 + 6 + 8, row.getOutputLength());
   }
 
   @Test
   public void read() {
     CSVHelper helper = new CSVHelper();
     List<CSVRow> rowList = helper.read(new File("test.csv"));
-    assertEquals("test", rowList.get(0).get(0).getValue());
-    assertEquals(",", rowList.get(0).get(1).getValue());
-    assertEquals("\"", rowList.get(0).get(2).getValue());
-    assertEquals("\r", rowList.get(0).get(3).getValue());
-    assertEquals("\n", rowList.get(0).get(4).getValue());
-    assertEquals("\r\n", rowList.get(0).get(5).getValue());
-    assertEquals("t,st", rowList.get(0).get(6).getValue());
-    assertEquals("t\"st", rowList.get(0).get(7).getValue());
-    assertEquals("t\nst", rowList.get(0).get(9).getValue());
+    CSVRow row = rowList.get(0);
+    assertThat(row.get(0).getValue()).isEqualTo("test");
+    assertThat(row.get(1).getValue()).isEqualTo(",");
+    assertThat(row.get(2).getValue()).isEqualTo("\"");
+    assertThat(row.get(3).getValue()).isEqualTo("\r");
+    assertThat(row.get(4).getValue()).isEqualTo("\n");
+    assertThat(row.get(5).getValue()).isEqualTo("\r\n");
+    assertThat(row.get(6).getValue()).isEqualTo("t,st");
+    assertThat(row.get(7).getValue()).isEqualTo("t\"st");
+    assertThat(row.get(9).getValue()).isEqualTo("t\nst");
   }
 
   @Test
@@ -70,15 +71,16 @@ public class CSVHelperTest {
         row -> {
           rowList.add(row);
         });
-    assertEquals("test", rowList.get(0).get(0).getValue());
-    assertEquals(",", rowList.get(0).get(1).getValue());
-    assertEquals("\"", rowList.get(0).get(2).getValue());
-    assertEquals("\r", rowList.get(0).get(3).getValue());
-    assertEquals("\n", rowList.get(0).get(4).getValue());
-    assertEquals("\r\n", rowList.get(0).get(5).getValue());
-    assertEquals("t,st", rowList.get(0).get(6).getValue());
-    assertEquals("t\"st", rowList.get(0).get(7).getValue());
-    assertEquals("t\rst", rowList.get(0).get(8).getValue());
-    assertEquals("t\nst", rowList.get(0).get(9).getValue());
+    CSVRow row = rowList.get(0);
+    assertThat(row.get(0).getValue()).isEqualTo("test");
+    assertThat(row.get(1).getValue()).isEqualTo(",");
+    assertThat(row.get(2).getValue()).isEqualTo("\"");
+    assertThat(row.get(3).getValue()).isEqualTo("\r");
+    assertThat(row.get(4).getValue()).isEqualTo("\n");
+    assertThat(row.get(5).getValue()).isEqualTo("\r\n");
+    assertThat(row.get(6).getValue()).isEqualTo("t,st");
+    assertThat(row.get(7).getValue()).isEqualTo("t\"st");
+    assertThat(row.get(8).getValue()).isEqualTo("t\rst");
+    assertThat(row.get(9).getValue()).isEqualTo("t\nst");
   }
 }

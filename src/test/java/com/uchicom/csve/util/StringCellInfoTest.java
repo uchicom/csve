@@ -1,57 +1,57 @@
 // (C) 2022 uchicom
 package com.uchicom.csve.util;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class StringCellInfoTest {
 
   @Test
   public void checkEscape() {
     StringCellInfo info = new StringCellInfo("test");
-    assertEquals(true, info.checkEscape(","));
-    assertEquals(true, info.checkEscape("\""));
-    assertEquals(true, info.checkEscape("\r"));
-    assertEquals(true, info.checkEscape("\n"));
-    assertEquals(true, info.checkEscape("t,st"));
-    assertEquals(true, info.checkEscape("t\"st"));
-    assertEquals(true, info.checkEscape("t\rst"));
-    assertEquals(true, info.checkEscape("t\nst"));
+    assertThat(info.checkEscape(",")).isTrue();
+    assertThat(info.checkEscape("\"")).isTrue();
+    assertThat(info.checkEscape("\r")).isTrue();
+    assertThat(info.checkEscape("\n")).isTrue();
+    assertThat(info.checkEscape("t,st")).isTrue();
+    assertThat(info.checkEscape("t\"st")).isTrue();
+    assertThat(info.checkEscape("t\rst")).isTrue();
+    assertThat(info.checkEscape("t\nst")).isTrue();
   }
 
   @Test
   public void checkEscape2() {
     StringCellInfo info = new StringCellInfo("test");
-    assertEquals(true, info.checkEscape2(","));
-    assertEquals(true, info.checkEscape2("\""));
-    assertEquals(true, info.checkEscape2("\r"));
-    assertEquals(true, info.checkEscape2("\n"));
-    assertEquals(true, info.checkEscape2("t,st"));
-    assertEquals(true, info.checkEscape2("t\"st"));
-    assertEquals(true, info.checkEscape2("t\rst"));
-    assertEquals(true, info.checkEscape2("t\nst"));
+    assertThat(info.checkEscape2(",")).isTrue();
+    assertThat(info.checkEscape2("\"")).isTrue();
+    assertThat(info.checkEscape2("\r")).isTrue();
+    assertThat(info.checkEscape2("\n")).isTrue();
+    assertThat(info.checkEscape2("t,st")).isTrue();
+    assertThat(info.checkEscape2("t\"st")).isTrue();
+    assertThat(info.checkEscape2("t\rst")).isTrue();
+    assertThat(info.checkEscape2("t\nst")).isTrue();
   }
 
   @Test
   public void checkExe() {
     StringCellInfo info = new StringCellInfo("test");
-    assertEquals(true, info.checkExe(","));
-    assertEquals(true, info.checkExe("\""));
-    assertEquals(true, info.checkExe("\r"));
-    assertEquals(true, info.checkExe("\n"));
-    assertEquals(true, info.checkExe("t,st"));
-    assertEquals(true, info.checkExe("t\"st"));
-    assertEquals(true, info.checkExe("t\rst"));
-    assertEquals(true, info.checkExe("t\nst"));
+    assertThat(info.checkExe(",")).isTrue();
+    assertThat(info.checkExe("\"")).isTrue();
+    assertThat(info.checkExe("\r")).isTrue();
+    assertThat(info.checkExe("\n")).isTrue();
+    assertThat(info.checkExe("t,st")).isTrue();
+    assertThat(info.checkExe("t\"st")).isTrue();
+    assertThat(info.checkExe("t\rst")).isTrue();
+    assertThat(info.checkExe("t\nst")).isTrue();
   }
 
   @Test
   public void getOutputLength() {
-    assertEquals(4, new StringCellInfo("test").getOutputLength());
-    assertEquals(4 + 2, new StringCellInfo("t,st").getOutputLength());
-    assertEquals(4 + 2 + 1, new StringCellInfo("t\"st").getOutputLength());
+    assertThat(new StringCellInfo("test").getOutputLength()).isEqualTo(4);
+    assertThat(new StringCellInfo("t,st").getOutputLength()).isEqualTo(4 + 2);
+    assertThat(new StringCellInfo("t\"st").getOutputLength()).isEqualTo(4 + 2 + 1);
   }
 
   @Ignore
