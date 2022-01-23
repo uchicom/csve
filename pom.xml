@@ -6,6 +6,13 @@
   	<name>csve</name>
 	<description>csv editor</description>
 	<url>https://github.com/uchicom/csve/wiki</url>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<spotless.version>2.20.0</spotless.version>
+		<java.version>1.8</java.version>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+	</properties>
 	<licenses>
 		<license>
 			<name>Apache License 2.0</name>
@@ -65,6 +72,55 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			 <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M5</version>
+            </plugin>
+			<plugin>
+				<groupId>com.diffplug.spotless</groupId>
+				<artifactId>spotless-maven-plugin</artifactId>
+				<version>${spotless.version}</version>
+				<executions>
+					<execution>
+					<goals>
+						<goal>check</goal>
+					</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<formats>
+						<!-- you can define as many formats as you want, each is independent -->
+						<format>
+							<includes>
+								<include>*.md</include>
+								<include>.gitignore</include>
+							</includes>
+							<trimTrailingWhitespace />
+							<endWithNewline />
+							<indent>
+								<tabs>true</tabs>
+								<spacesPerTab>4</spacesPerTab>
+							</indent>
+						</format>
+					</formats>
+					<java>
+						<includes>
+								<include>src/main/java/**/*.java</include>
+								<include>src/test/java/**/*.java</include>
+							</includes>
+							<importOrder />
+								<removeUnusedImports />
+						<googleJavaFormat>
+							<version>1.7</version>
+							<style>GOOGLE</style>
+						</googleJavaFormat>
+						<licenseHeader>
+							<content>// (C) $YEAR uchicom</content>  <!-- or <file>${basedir}/license-header</file> -->
+						</licenseHeader>
+					</java>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
