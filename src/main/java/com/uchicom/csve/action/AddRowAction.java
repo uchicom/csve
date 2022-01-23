@@ -1,35 +1,28 @@
-// (c) 2006 uchicom
+// (C) 2006 uchicom
 package com.uchicom.csve.action;
-
-import java.awt.event.ActionEvent;
 
 import com.uchicom.csve.util.SearchTable;
 import com.uchicom.csve.util.UIAbstractAction;
 import com.uchicom.csve.window.CsvTagEditorUI;
+import java.awt.event.ActionEvent;
 
-/**
- * @author uchiyama
- *
- */
+/** @author uchiyama */
 public class AddRowAction extends UIAbstractAction {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+  /** */
+  private static final long serialVersionUID = 1L;
 
-	/*
-	 * (非 Javadoc)
-	 * 
-	 * @see
-	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
-	public void actionPerformed(ActionEvent e) {
-		// TODO 自動生成されたメソッド・スタブ
+  /*
+   * (非 Javadoc)
+   *
+   * @see
+   * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    // TODO 自動生成されたメソッド・スタブ
 
-		CsvTagEditorUI csvTagEditorUI = (CsvTagEditorUI) uiStore.getUI(CsvTagEditorUI.UI_KEY);
-		SearchTable searchTable = csvTagEditorUI.getSelectedTable();
-		searchTable.addRow();
-	}
-
+    CsvTagEditorUI csvTagEditorUI = (CsvTagEditorUI) uiStore.getUI(CsvTagEditorUI.UI_KEY);
+    SearchTable searchTable = csvTagEditorUI.getSelectedTable();
+    searchTable.addRow();
+  }
 }
