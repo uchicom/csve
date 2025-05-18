@@ -20,12 +20,16 @@ import java.util.List;
  */
 public class CSVReader implements Closeable {
 
-  private CharHelper charHelper = new CharHelper();
   private BufferedReader bis;
+  // 読み込んだファイルの長さ
   private int readFileLength;
+  // 解析位置
   private int fileIndex;
   boolean crFlg;
-  private char[] chars = new char[1024 * 4 * 1024];
+  int BUFFER_SIZE = 4 * 1024 * 1024;
+  int readLength = 0; // 読み込んだ長さ
+  private char[] chars = new char[BUFFER_SIZE];
+  private char[] tmpChars = new char[BUFFER_SIZE];
   private List<char[]> charsList = new ArrayList<>();
   boolean escapeOnFlg = false;
   boolean escapeOffFlg = false;
@@ -82,16 +86,6 @@ public class CSVReader implements Closeable {
     boolean needReload() {
       return index >= length;
     }
-  }
-
-  private CharHelper getChars() throws IOException {
-
-    if (charHelper.needReload()) {
-      charHelper.length = bis.read(chars);
-      charHelper.index = 0;
-    }
-
-    return charHelper;
   }
 
   /**
@@ -400,24 +394,37 @@ public class CSVReader implements Closeable {
    */
   public String[] getNextCsvLine(int columnSize, boolean isForceSizeFix) throws IOException {
 
-    int charStartIndex = fileIndex; // 次の行のカラムinexを現在のfileIndexから取得
-    int charCount = 0; // 文字列抽出時の文字数
+    // カラム抽出用
+    int charStartIndex = fileIndex; // 次の行のレコード開始indexを現在のfileIndexから取得
+    int charCount = 0; // カラム文字列抽出時の文字数
+
+    // カラム格納用
     int columnIndex = 0; // 列Index
     String[] columns = new String[columnSize]; // 返却する文字列配列
     boolean isEscape = false; // エスケープ中か否か
     while (true) {
       // CSVレコードを取得するか、ファイルが終わるまで繰り返す、繰り返し単位は1文字
-      if (fileIndex >= readFileLength) { // 次のバッファを読み込みたいとき
-        if (charStartIndex < readFileLength) { // 取得中のデータがある場合はカラムバッファに格納
-          columnBuff.append(new String(chars, charStartIndex, charCount));
+      if (fileIndex >= readLength) { // 次のバッファを読み込みたいとき
+        if (charStartIndex < readLength) { // 取得中のデータがある場合はカラムバッファに格納
+          readLength = readLength - charStartIndex;
+          System.arraycopy(chars, charStartIndex, tmpChars, 0, readLength);
+          char[] tmpChars2 = chars;
+          chars = tmpChars;
+          tmpChars = tmpChars2;
+          fileIndex = charCount;
+        } else {
+          fileIndex = 0;
+          readLength = 0;
         }
+        charStartIndex = 0;
         // 読み込み
-        int readLength = bis.read(chars);
+        int length = bis.read(chars, readLength, chars.length - readLength);
+
         // 読み込みできない場合はループを抜ける
-        if (readLength == IS_EOF) {
+        if (length == IS_EOF) {
           break;
         }
-        readFileLength += readLength;
+        readLength += length;
       }
       if (isEscape) {
         // lengthチェックが必要
@@ -445,24 +452,15 @@ public class CSVReader implements Closeable {
             throw new RuntimeException("パース失敗");
           }
         }
-        if (columnBuff.length() > 0) {
-          if (fileIndex > 0 && chars[fileIndex - 1] == '\r') {
-            columnBuff.append(new String(chars, charStartIndex, charCount - 1));
-          } else {
-            columnBuff.append(new String(chars, charStartIndex, charCount));
-          }
-          columns[columnIndex] = columnBuff.toString();
-          columnBuff.setLength(0);
+        if (fileIndex > 0 && chars[fileIndex - 1] == '\r') {
+          columns[columnIndex] = new String(chars, charStartIndex, charCount - 1);
         } else {
-          if (fileIndex > 0 && chars[fileIndex - 1] == '\r') {
-            columns[columnIndex] = new String(chars, charStartIndex, charCount - 1);
-          } else {
-            columns[columnIndex] = new String(chars, charStartIndex, charCount);
-          }
+          columns[columnIndex] = new String(chars, charStartIndex, charCount);
         }
+
         if (chars[fileIndex] == '\n') {
           fileIndex++;
-          // ここでデータ終了
+          // ここでレコード終了
           return columns;
         }
         fileIndex++;
@@ -472,6 +470,7 @@ public class CSVReader implements Closeable {
         charCount = 0;
         continue;
       }
+      // 文字列カウントアップ
       fileIndex++;
       charCount++;
     }
