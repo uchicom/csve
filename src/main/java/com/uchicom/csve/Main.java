@@ -4,10 +4,14 @@ package com.uchicom.csve;
 import com.uchicom.csve.window.CsvTagEditor;
 import javax.swing.SwingUtilities;
 
-/** @author UCHIYAMA */
+/**
+ * @author UCHIYAMA
+ */
 public class Main {
 
-  /** @param args the command line arguments */
+  /**
+   * @param args the command line arguments
+   */
   public static void main(String[] args) {
     SwingUtilities.invokeLater(
         () -> {

@@ -6,7 +6,9 @@ import java.util.Comparator;
 import java.util.List;
 import javax.swing.table.DefaultTableColumnModel;
 
-/** @author uchiyama */
+/**
+ * @author uchiyama
+ */
 public class SortTableColumnModel extends DefaultTableColumnModel {
 
   /** */

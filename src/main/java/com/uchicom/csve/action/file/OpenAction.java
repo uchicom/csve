@@ -9,7 +9,9 @@ import java.io.File;
 import java.util.Properties;
 import javax.swing.JFileChooser;
 
-/** @author uchiyama */
+/**
+ * @author uchiyama
+ */
 public class OpenAction extends UIAbstractAction {
 
   /** */

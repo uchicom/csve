@@ -4,7 +4,9 @@ package com.uchicom.csve.util;
 import java.util.List;
 import javax.swing.JTable;
 
-/** @author uchiyama */
+/**
+ * @author uchiyama
+ */
 public class SearchTable extends JTable {
 
   /** */

@@ -3,7 +3,9 @@ package com.uchicom.csve.util;
 
 import javax.swing.AbstractAction;
 
-/** @author uchiyama */
+/**
+ * @author uchiyama
+ */
 public abstract class UIAbstractAction extends AbstractAction {
 
   /** */

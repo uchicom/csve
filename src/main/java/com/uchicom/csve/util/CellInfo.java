@@ -1,7 +1,9 @@
 // (C) 2005 uchicom
 package com.uchicom.csve.util;
 
-/** @author uchiyama */
+/**
+ * @author uchiyama
+ */
 public interface CellInfo extends java.lang.Comparable<CellInfo> {
 
   public Object getValue();
@@ -22,8 +24,10 @@ public interface CellInfo extends java.lang.Comparable<CellInfo> {
   public void addStatus(int addStatus);
 
   public void removeStatus(int removeStatus);
+
   /** 並び替えで使用する */
   public boolean isEmpty();
+
   /** 囲み文字が必要かを判定する */
   public boolean mustEscape();
 

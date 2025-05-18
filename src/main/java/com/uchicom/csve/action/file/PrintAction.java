@@ -14,7 +14,9 @@ import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.MediaSizeName;
 
-/** @author uchiyama */
+/**
+ * @author uchiyama
+ */
 public class PrintAction extends UIAbstractAction {
 
   /** */

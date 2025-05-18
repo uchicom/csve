@@ -12,7 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 
-/** @author uchiyama */
+/**
+ * @author uchiyama
+ */
 public class CreatePatternAction extends UIAbstractAction {
 
   /** */
