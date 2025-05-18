@@ -43,7 +43,7 @@ public class SaveAction extends UIAbstractAction {
         File selectFile = chooser.getSelectedFile();
         tabPane.setTitleAt(tabPane.getSelectedIndex(), selectFile.getName());
 
-        CSVWriter<CellInfo> writer = new CSVWriter<CellInfo>(selectFile, "SJIS");
+        CSVWriter writer = new CSVWriter(selectFile, "SJIS");
         List<CellInfo[]> csvList =
             csvTagEditorUI.getTableMap().get(Integer.valueOf(tabPane.getSelectedIndex()));
         if (csvList == null) {
