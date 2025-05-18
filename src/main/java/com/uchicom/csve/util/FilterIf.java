@@ -1,7 +1,9 @@
 // (C) 2006 uchicom
 package com.uchicom.csve.util;
 
-/** @author uchiyama */
+/**
+ * @author uchiyama
+ */
 public interface FilterIf {
   public void setFilter(String filterValue);
 

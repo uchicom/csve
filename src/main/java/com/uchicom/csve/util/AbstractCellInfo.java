@@ -1,7 +1,9 @@
 // (C) 2005 uchicom
 package com.uchicom.csve.util;
 
-/** @author uchiyama */
+/**
+ * @author uchiyama
+ */
 public abstract class AbstractCellInfo implements CellInfo {
 
   /** Creates a new instance of AbstractCellInfo */
@@ -53,6 +55,7 @@ public abstract class AbstractCellInfo implements CellInfo {
   public void addStatus(int addStatus) {
     status = status | addStatus;
   }
+
   /**
    * ステータスから指定した引数を消します。
    *

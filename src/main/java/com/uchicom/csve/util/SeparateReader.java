@@ -10,7 +10,9 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-/** @author uchiyama */
+/**
+ * @author uchiyama
+ */
 public class SeparateReader {
 
   /**

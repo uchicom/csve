@@ -15,7 +15,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/** @author UCHIYAMA */
+/**
+ * @author UCHIYAMA
+ */
 public class CSVReader implements Closeable {
 
   private CharHelper charHelper = new CharHelper();

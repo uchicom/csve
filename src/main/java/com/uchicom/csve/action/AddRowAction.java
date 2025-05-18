@@ -6,7 +6,9 @@ import com.uchicom.csve.util.UIAbstractAction;
 import com.uchicom.csve.window.CsvTagEditorUI;
 import java.awt.event.ActionEvent;
 
-/** @author uchiyama */
+/**
+ * @author uchiyama
+ */
 public class AddRowAction extends UIAbstractAction {
 
   /** */

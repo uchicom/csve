@@ -9,7 +9,9 @@ import javax.swing.JTextArea;
 import javax.swing.plaf.basic.BasicBorders;
 import javax.swing.table.DefaultTableCellRenderer;
 
-/** @author uchiyama */
+/**
+ * @author uchiyama
+ */
 public class CellRenderer extends DefaultTableCellRenderer {
 
   /** */
@@ -20,10 +22,13 @@ public class CellRenderer extends DefaultTableCellRenderer {
   private JTextArea selectedFocusField = new JTextArea();
   private JTextArea selectedFocusInitField = new JTextArea();
   private JTextArea focusField = new JTextArea();
+
   /** 通常表示のフィールド */
   private JTextArea normalField = new JTextArea();
+
   /** 追加した行のフィールド */
   private JTextArea insertField = new JTextArea();
+
   /** 更新した行のフィールド */
   private JTextArea updateField = new JTextArea();
 

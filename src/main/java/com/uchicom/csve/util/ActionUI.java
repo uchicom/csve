@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.util.Properties;
 import javax.swing.Action;
 
-/** @author uchiyama */
+/**
+ * @author uchiyama
+ */
 public class ActionUI {
 
   public static String UI_KEY = "ActionUI";

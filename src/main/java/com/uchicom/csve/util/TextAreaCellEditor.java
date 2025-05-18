@@ -9,11 +9,14 @@ import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.table.TableCellEditor;
 
-/** @author uchicom: Shigeki Uchiyama */
+/**
+ * @author uchicom: Shigeki Uchiyama
+ */
 public class TextAreaCellEditor implements TableCellEditor {
 
   private JTextArea textArea = new JTextArea();
   private CellEditorListener listener;
+
   /** */
   public TextAreaCellEditor() {
     // TODO 自動生成されたコンストラクター・スタブ

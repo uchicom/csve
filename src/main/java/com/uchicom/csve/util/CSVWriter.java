@@ -8,7 +8,9 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
-/** @author uchiyama */
+/**
+ * @author uchiyama
+ */
 public class CSVWriter {
 
   /** Creates a new instance of CSVWriter */

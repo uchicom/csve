@@ -12,7 +12,9 @@ import java.util.List;
 import javax.swing.JFileChooser;
 import javax.swing.JTabbedPane;
 
-/** @author uchiyama */
+/**
+ * @author uchiyama
+ */
 public class SaveAction extends UIAbstractAction {
 
   /** */
@@ -41,9 +43,9 @@ public class SaveAction extends UIAbstractAction {
         File selectFile = chooser.getSelectedFile();
         tabPane.setTitleAt(tabPane.getSelectedIndex(), selectFile.getName());
 
-        CSVWriter writer = new CSVWriter(selectFile, "SJIS");
+        CSVWriter<CellInfo> writer = new CSVWriter<CellInfo>(selectFile, "SJIS");
         List<CellInfo[]> csvList =
-            csvTagEditorUI.getTableMap().get(new Integer(tabPane.getSelectedIndex()));
+            csvTagEditorUI.getTableMap().get(Integer.valueOf(tabPane.getSelectedIndex()));
         if (csvList == null) {
           System.out.println(tabPane.getSelectedComponent());
         }

@@ -3,10 +3,13 @@ package com.uchicom.csve.util;
 
 import java.util.regex.Pattern;
 
-/** @author uchiyama */
+/**
+ * @author uchiyama
+ */
 public class StringCellInfo extends AbstractCellInfo {
 
   private int lnCount;
+
   /** Creates a new instance of CellInfo */
   public StringCellInfo(String value, boolean bNumber) {
     setValue(value);
@@ -113,6 +116,7 @@ public class StringCellInfo extends AbstractCellInfo {
   }
 
   Pattern pat = Pattern.compile(".*[\\,\\r\\n\"].*");
+
   /** カンマ、改行、ダブルクォートを含む場合はtrue */
   protected boolean checkEscape(String value) {
     if (value == null) return false;

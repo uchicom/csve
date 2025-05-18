@@ -4,12 +4,16 @@ package com.uchicom.csve.util;
 import java.util.Comparator;
 import java.util.List;
 
-/** @author uchiyama */
+/**
+ * @author uchiyama
+ */
 public class CellInfoComparator implements Comparator<CellInfo[]> {
 
   int iMaxList = 0;
+
   /** 並び替え列 */
   int[] sortIndexes = null;
+
   /** 並び替え種別ASC,DESC */
   int[] sortTypes = null;
 
@@ -31,6 +35,7 @@ public class CellInfoComparator implements Comparator<CellInfo[]> {
       sortTypes[iList] = tableColumn.getSortType();
     }
   }
+
   /* (非 Javadoc)
    * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
    */

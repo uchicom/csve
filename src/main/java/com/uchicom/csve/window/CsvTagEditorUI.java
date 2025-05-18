@@ -12,7 +12,9 @@ import java.util.Properties;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 
-/** @author uchiyama */
+/**
+ * @author uchiyama
+ */
 public interface CsvTagEditorUI extends FileOpener {
   String UI_KEY = "CsvTagEditorUI";
 
@@ -30,6 +32,7 @@ public interface CsvTagEditorUI extends FileOpener {
   public Map<Integer, List<CellInfo[]>> getTableMap();
 
   public Map<Integer, File> getFileMap();
+
   /**
    * タブペインを取得します。
    *
