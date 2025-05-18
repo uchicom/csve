@@ -37,6 +37,7 @@ public class CSVReader implements Closeable {
 
   StringBuffer columnBuff = new StringBuffer(128);
   private static final int IS_EOF = -1;
+
   /**
    * Creates a new instance of CVSReader
    *
