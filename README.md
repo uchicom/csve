@@ -13,7 +13,7 @@ CSV Editor
 
 # 実行
 ```
-java -jar .\target\csve-1.1.0-jar-with-dependencies.jar 
+java -jar .\target\csve-1.1.0-jar-with-dependencies.jar
 ```
 
 ## mvn
