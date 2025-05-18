@@ -3,7 +3,9 @@ package com.uchicom.csve;
 
 import java.io.File;
 
-/** @author uchicom: Shigeki Uchiyama */
+/**
+ * @author uchicom: Shigeki Uchiyama
+ */
 public class Constants {
 
   public static final File CONF_FILE = new File("conf/csve.properties");

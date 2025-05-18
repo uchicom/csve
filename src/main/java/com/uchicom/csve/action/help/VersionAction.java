@@ -6,7 +6,9 @@ import com.uchicom.csve.window.CsvTagEditorUI;
 import java.awt.event.ActionEvent;
 import javax.swing.JOptionPane;
 
-/** @author uchiyama */
+/**
+ * @author uchiyama
+ */
 public class VersionAction extends UIAbstractAction {
 
   /** */

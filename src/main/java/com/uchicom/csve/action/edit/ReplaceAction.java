@@ -9,7 +9,9 @@ import java.awt.event.ActionEvent;
 import java.util.List;
 import javax.swing.JOptionPane;
 
-/** @author uchiyama */
+/**
+ * @author uchiyama
+ */
 public class ReplaceAction extends UIAbstractAction {
 
   /** */

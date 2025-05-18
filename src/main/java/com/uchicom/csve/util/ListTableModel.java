@@ -4,7 +4,9 @@ package com.uchicom.csve.util;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 
-/** @author UCHIYAMA */
+/**
+ * @author UCHIYAMA
+ */
 public class ListTableModel extends DefaultTableModel {
 
   /** */

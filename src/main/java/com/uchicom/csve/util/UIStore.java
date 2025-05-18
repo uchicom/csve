@@ -4,7 +4,9 @@ package com.uchicom.csve.util;
 import java.util.HashMap;
 import java.util.Map;
 
-/** @author uchiyama */
+/**
+ * @author uchiyama
+ */
 public class UIStore {
 
   /** Creates a new instance of UIStore */

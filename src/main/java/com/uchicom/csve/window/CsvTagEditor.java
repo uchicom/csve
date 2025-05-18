@@ -39,7 +39,9 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 
-/** @author uchiyama */
+/**
+ * @author uchiyama
+ */
 public class CsvTagEditor extends ResumeFrame implements CsvTagEditorUI {
 
   /** */
@@ -123,14 +125,19 @@ public class CsvTagEditor extends ResumeFrame implements CsvTagEditorUI {
   }
 
   private Action createAction(String className)
-      throws InstantiationException, IllegalAccessException, IllegalArgumentException,
-          InvocationTargetException, NoSuchMethodException, SecurityException,
+      throws InstantiationException,
+          IllegalAccessException,
+          IllegalArgumentException,
+          InvocationTargetException,
+          NoSuchMethodException,
+          SecurityException,
           ClassNotFoundException {
     UIAbstractAction action = actionMap.get(className);
     if (action == null) {
       action =
           (UIAbstractAction)
               Class.forName(className)
+                  .getConstructor()
                   .newInstance(); // .getConstructor(UIStore.class).newInstance(uiStore);
       action.installUI(uiStore);
       actionMap.put(className, action);
@@ -174,7 +181,7 @@ public class CsvTagEditor extends ResumeFrame implements CsvTagEditorUI {
       table.setRowSelectionAllowed(true);
 
       list.add(table);
-      map.put(new Integer(tabPane.getTabCount()), cvsList);
+      map.put(Integer.valueOf(tabPane.getTabCount()), cvsList);
       JScrollPane scrollPane = new JScrollPane(table);
       // 行ヘッダはまだ敷居が高いな
       // scrollPane.setRowHeaderView(new JList(rowHeads));
@@ -192,18 +199,20 @@ public class CsvTagEditor extends ResumeFrame implements CsvTagEditorUI {
 
   /** タブを追加する */
   public void addTab(String tabName, JTable table, List<CellInfo[]> csvList) {
-    map.put(new Integer(tabPane.getTabCount()), csvList);
+    map.put(Integer.valueOf(tabPane.getTabCount()), csvList);
     // ファイル名でタブに追加する
     tabPane.add(tabName, new JScrollPane(table));
   }
 
   /** テーブル情報を格納しているタブ */
   private JTabbedPane tabPane = new JTabbedPane(JTabbedPane.BOTTOM);
+
   /** テーブルを保持するマップ */
   private Map<Integer, List<CellInfo[]>> map = new HashMap<>();
 
   /** ファイルパスを保持するマップ */
   private Map<Integer, File> fileMap = new HashMap<>();
+
   /** ユーザーインターフェース保持クラス */
   private UIStore uiStore = new UIStore();
 
@@ -354,7 +363,7 @@ public class CsvTagEditor extends ResumeFrame implements CsvTagEditorUI {
       table.setColumnSelectionAllowed(true);
       // 行選択可能にする
       table.setRowSelectionAllowed(true);
-      getTableMap().put(new Integer(tabPane.getTabCount()), csvList);
+      getTableMap().put(Integer.valueOf(tabPane.getTabCount()), csvList);
       getFileMap().put(tabPane.getTabCount(), file);
       getTableList().add(table);
       // ファイル名でタブに追加する

@@ -23,7 +23,9 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 
-/** @author uchiyama */
+/**
+ * @author uchiyama
+ */
 public class CreateAction extends UIAbstractAction {
 
   /** */
@@ -96,7 +98,7 @@ public class CreateAction extends UIAbstractAction {
         table.setRowSelectionAllowed(true);
 
         csvTagEditorUI.getTableList().add(table);
-        csvTagEditorUI.getTableMap().put(new Integer(tabPane.getTabCount()), cvsList);
+        csvTagEditorUI.getTableMap().put(Integer.valueOf(tabPane.getTabCount()), cvsList);
         JScrollPane scrollPane = new JScrollPane(table);
         // 行ヘッダはまだ敷居が高いな
         // scrollPane.setRowHeaderView(new JList(rowHeads));

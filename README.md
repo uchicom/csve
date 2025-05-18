@@ -10,3 +10,14 @@ CSV Editor
 
 クリップボードをチェックしてあれば確認する
 パスがあるばあい、テキストがある場合
+
+# 実行
+```
+java -jar .\target\csve-1.1.0-jar-with-dependencies.jar
+```
+
+## mvn
+### 実行
+```
+mvn exec:java "-Dexec.mainClass=com.uchicom.csve.Main"
+```

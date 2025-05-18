@@ -5,7 +5,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.table.JTableHeader;
 
-/** @author uchiyama */
+/**
+ * @author uchiyama
+ */
 public class SortMouseListener implements MouseListener {
 
   /*

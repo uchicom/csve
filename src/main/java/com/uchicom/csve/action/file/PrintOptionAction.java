@@ -4,7 +4,9 @@ package com.uchicom.csve.action.file;
 import com.uchicom.csve.util.UIAbstractAction;
 import java.awt.event.ActionEvent;
 
-/** @author uchiyama */
+/**
+ * @author uchiyama
+ */
 public class PrintOptionAction extends UIAbstractAction {
 
   /** */

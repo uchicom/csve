@@ -4,7 +4,9 @@ package com.uchicom.csve.util;
 import java.util.List;
 import javax.swing.table.TableColumn;
 
-/** @author uchiyama */
+/**
+ * @author uchiyama
+ */
 public class SortTableColumn extends TableColumn implements FilterIf {
 
   /** */
