@@ -68,7 +68,7 @@ public class ListTableModel extends DefaultTableModel {
         if (!contain && i == startRow && j == 0) {
           j = startCol + 1;
         }
-        if (target.equals(cells[j])) {
+        if (target.equals(cells[j].toString())) {
           return new Point(i, j);
         }
       }
