@@ -5,8 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;
 
@@ -148,48 +146,6 @@ public class CSVReaderTest {
     } catch (Exception e) {
       fail(e);
     }
-  }
-
-  @Test
-  public void getNextCsvLine1M() {
-    try (CSVReader reader = new CSVReader(new File("../csvdb/test.csv"), StandardCharsets.UTF_8);
-        FileOutputStream fos = new FileOutputStream(new File("./diff.csv"))) {
-
-      String[] result = reader.getNextCsvLine(4, true);
-      fos.write(join(result).getBytes(StandardCharsets.UTF_8));
-      fos.write("\n".getBytes(StandardCharsets.UTF_8));
-      int length = result.length;
-      while ((result = reader.getNextCsvLine(length, true)) != null) {
-        fos.write(join(result).getBytes(StandardCharsets.UTF_8));
-        fos.write("\n".getBytes(StandardCharsets.UTF_8));
-      }
-      assertThat(reader.getNextCsvLine(4, true)).isNull();
-    } catch (Exception e) {
-      fail(e);
-    }
-  }
-
-  String join(String[] strings) {
-    StringBuilder sb = new StringBuilder();
-    for (int i = 0; i < strings.length; i++) {
-      if (i != 0) {
-        sb.append(",");
-      }
-      if (strings[i] == null) {
-        continue;
-      }
-      if (strings[i].length() == 0) {
-        continue;
-      }
-      if (strings[i].contains(",") || strings[i].contains("\n") || strings[i].contains("\"")) {
-        sb.append("\"");
-        sb.append(strings[i].replaceAll("\"", "\"\""));
-        sb.append("\"");
-      } else {
-        sb.append(strings[i].replaceAll("\"", "\"\""));
-      }
-    }
-    return sb.toString();
   }
 
   @Test
