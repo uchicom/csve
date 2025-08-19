@@ -39,7 +39,6 @@ public class CSVReader implements Closeable {
   int maxLnCount = 0;
   String enc;
 
-  StringBuffer columnBuff = new StringBuffer(128);
   private static final int IS_EOF = -1;
 
   /**
@@ -486,12 +485,8 @@ public class CSVReader implements Closeable {
       }
     }
 
-    if (columnBuff.length() > 0) {
-      columns[columnIndex] = columnBuff.toString();
-      columnBuff.setLength(0);
-    } else {
-      columns[columnIndex] = new String(chars, charStartIndex, charCount);
-    }
+    columns[columnIndex] = new String(chars, charStartIndex, charCount);
+
     if (columnIndex == 0) {
       return null;
     }
