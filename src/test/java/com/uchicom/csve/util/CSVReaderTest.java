@@ -26,6 +26,9 @@ public class CSVReaderTest {
       assertThat(result[1]).isEqualTo("2");
       assertThat(result[2]).isEqualTo("3");
       assertThat(result[3]).isEqualTo("4");
+      assertThat(reader.getRecordFromIndex()).isEqualTo(0);
+      assertThat(reader.getRecordToIndex()).isEqualTo(7);
+      assertThat(reader.getRecordLength()).isEqualTo(7);
       assertThat(reader.getNextCsvLine(4, true)).isNull();
     } catch (Exception e) {
       fail(e);
@@ -44,6 +47,9 @@ public class CSVReaderTest {
       assertThat(result[1]).isEqualTo("い");
       assertThat(result[2]).isEqualTo("う");
       assertThat(result[3]).isEqualTo("え");
+      assertThat(reader.getRecordFromIndex()).isEqualTo(0);
+      assertThat(reader.getRecordToIndex()).isEqualTo(7);
+      assertThat(reader.getRecordLength()).isEqualTo(7);
       assertThat(reader.getNextCsvLine(4, true)).isNull();
       ;
     } catch (Exception e) {
@@ -63,12 +69,18 @@ public class CSVReaderTest {
       assertThat(result[1]).isEqualTo("い");
       assertThat(result[2]).isEqualTo("う");
       assertThat(result[3]).isEqualTo("え");
+      assertThat(reader.getRecordFromIndex()).isEqualTo(0);
+      assertThat(reader.getRecordToIndex()).isEqualTo(8);
+      assertThat(reader.getRecordLength()).isEqualTo(8);
       result = reader.getNextCsvLine(4, true);
       assertThat(result).hasSize(4);
       assertThat(result[0]).isEqualTo("1");
       assertThat(result[1]).isEqualTo("2");
       assertThat(result[2]).isEqualTo("3");
       assertThat(result[3]).isEqualTo("4");
+      assertThat(reader.getRecordFromIndex()).isEqualTo(8);
+      assertThat(reader.getRecordToIndex()).isEqualTo(15);
+      assertThat(reader.getRecordLength()).isEqualTo(7);
       assertThat(reader.getNextCsvLine(4, true)).isNull();
     } catch (Exception e) {
       fail(e);
@@ -87,6 +99,9 @@ public class CSVReaderTest {
       assertThat(result[1]).isEqualTo("");
       assertThat(result[2]).isEqualTo("");
       assertThat(result[3]).isEqualTo("");
+      assertThat(reader.getRecordFromIndex()).isEqualTo(0);
+      assertThat(reader.getRecordToIndex()).isEqualTo(3);
+      assertThat(reader.getRecordLength()).isEqualTo(3);
       assertThat(reader.getNextCsvLine(4, true)).isNull();
     } catch (Exception e) {
       fail(e);
@@ -105,6 +120,9 @@ public class CSVReaderTest {
       assertThat(result[1]).isEqualTo(",");
       assertThat(result[2]).isEqualTo("\n");
       assertThat(result[3]).isEqualTo("a\"\\\\\"b");
+      assertThat(reader.getRecordFromIndex()).isEqualTo(0);
+      assertThat(reader.getRecordToIndex()).isEqualTo(18);
+      assertThat(reader.getRecordLength()).isEqualTo(18);
       assertThat(reader.getNextCsvLine(4, true)).isNull();
     } catch (Exception e) {
       fail(e);
@@ -123,6 +141,9 @@ public class CSVReaderTest {
       assertThat(result[1]).isEqualTo(",");
       assertThat(result[2]).isEqualTo("\n");
       assertThat(result[3]).isEqualTo("a\"\\\\\"b");
+      assertThat(reader.getRecordFromIndex()).isEqualTo(0);
+      assertThat(reader.getRecordToIndex()).isEqualTo(19);
+      assertThat(reader.getRecordLength()).isEqualTo(19);
       assertThat(reader.getNextCsvLine(4, true)).isNull();
     } catch (Exception e) {
       fail(e);
@@ -142,6 +163,9 @@ public class CSVReaderTest {
       assertThat(result[1]).isEqualTo(",");
       assertThat(result[2]).isEqualTo("\r\n");
       assertThat(result[3]).isEqualTo("a\"\\\\\"b");
+      assertThat(reader.getRecordFromIndex()).isEqualTo(0);
+      assertThat(reader.getRecordToIndex()).isEqualTo(21);
+      assertThat(reader.getRecordLength()).isEqualTo(21);
       assertThat(reader.getNextCsvLine(4, true)).isNull();
     } catch (Exception e) {
       fail(e);
