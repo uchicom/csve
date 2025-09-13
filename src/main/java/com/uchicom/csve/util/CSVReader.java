@@ -39,6 +39,11 @@ public class CSVReader implements Closeable {
   int maxLnCount = 0;
   String enc;
 
+  int recordFromIndex = 0;
+  int recordLength = 0;
+  int recordToIndex = 0;
+  int readTotal = 0;
+
   private static final int IS_EOF = -1;
 
   /**
@@ -424,6 +429,7 @@ public class CSVReader implements Closeable {
           break;
         }
         readLength += length;
+        readTotal += length;
       }
       if (isEscape) {
         // lengthチェックが必要
@@ -459,6 +465,9 @@ public class CSVReader implements Closeable {
 
         if (chars[fileIndex] == '\n') {
           fileIndex++;
+          recordFromIndex = recordToIndex;
+          recordToIndex = readTotal - readLength + fileIndex;
+          recordLength = recordToIndex - recordFromIndex;
           // ここでレコード終了
           return columns;
         }
@@ -487,6 +496,9 @@ public class CSVReader implements Closeable {
 
     columns[columnIndex] = new String(chars, charStartIndex, charCount);
 
+    recordFromIndex = recordToIndex;
+    recordToIndex = readTotal - readLength + fileIndex;
+    recordLength = recordToIndex - recordFromIndex;
     if (columnIndex == 0) {
       return null;
     }
@@ -503,5 +515,17 @@ public class CSVReader implements Closeable {
         bis = null;
       }
     }
+  }
+
+  public int getRecordFromIndex() {
+    return recordFromIndex;
+  }
+
+  public int getRecordToIndex() {
+    return recordToIndex;
+  }
+
+  public int getRecordLength() {
+    return recordLength;
   }
 }
