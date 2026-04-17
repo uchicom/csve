@@ -77,7 +77,11 @@ public class CSVReader implements Closeable {
    * @throws IOException
    */
   public CSVReader(URL url, String enc) throws Exception {
-    this(url.openStream(), enc);
+    this(url, Charset.forName(enc));
+  }
+
+  public CSVReader(URL url, Charset charset) throws Exception {
+    this(url.openStream(), charset);
   }
 
   public class CharHelper {
