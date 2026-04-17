@@ -55,6 +55,10 @@ public class CSVReader implements Closeable {
     this(new File(fileName), enc);
   }
 
+  public CSVReader(String fileName, Charset charset) throws Exception {
+    this(new File(fileName), charset);
+  }
+
   public CSVReader(File file, String enc) throws Exception {
     this(new FileInputStream(file), enc);
   }
