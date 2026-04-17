@@ -25,6 +25,10 @@ public class CSVMappingReader extends CSVReader {
     this(new File(fileName), enc);
   }
 
+  public CSVMappingReader(String fileName, Charset charset) throws Exception {
+    this(new File(fileName), charset);
+  }
+
   public CSVMappingReader(File file, String enc) throws Exception {
     this(new FileInputStream(file), enc);
   }
@@ -57,7 +61,7 @@ public class CSVMappingReader extends CSVReader {
    * @param desiredHeaders 取得したいヘッダ名の配列
    * @throws IOException 入出力エラー発生時
    */
-  public void analyzeHeader(String[] desiredHeaders) throws IOException {
+  public void analyzeHeader(String... desiredHeaders) throws IOException {
     String[] csvHeaders = getNextCsvLine(desiredHeaders.length, true);
     headerCount = csvHeaders.length;
     mappingIndex = new int[desiredHeaders.length];
